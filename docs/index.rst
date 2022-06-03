@@ -7,6 +7,21 @@
 Burin Logging Utility
 =====================
 
+
+.. only:: builder_html
+
+    .. image:: https://img.shields.io/pypi/v/burin?color=007EC6
+        :target: https://pypi.org/project/burin/
+        :alt: PyPI - Release
+
+    .. image:: https://img.shields.io/pypi/l/burin
+        :target: https://github.com/PeacefullyDisturbed/burin/blob/main/LICENSE
+        :alt: License
+
+    .. image:: https://img.shields.io/pypi/pyversions/burin?color=blue
+        :target: https://pypi.org/project/burin/
+        :alt: Python Versions
+
 Burin (/ˈbyʊər ɪn, ˈbɜr-/byoor-in, bur-/) is a logging library that is meant to
 add features and simplify usage compared to the Python standard library
 :mod:`logging` package.  It can be used as a direct replacement in most cases.

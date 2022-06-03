@@ -1,3 +1,19 @@
+.. image:: https://img.shields.io/pypi/v/burin?color=007EC6
+    :target: https://pypi.org/project/burin/
+    :alt: PyPI - Release
+
+.. image:: https://img.shields.io/pypi/l/burin
+    :target: https://github.com/PeacefullyDisturbed/burin/blob/main/LICENSE
+    :alt: License
+
+.. image:: https://img.shields.io/pypi/pyversions/burin?color=blue
+    :target: https://pypi.org/project/burin/
+    :alt: Python Versions
+
+.. image:: https://img.shields.io/readthedocs/burin
+    :target: https://burin.readthedocs.io/en/latest/?badge=latest
+    :alt: Read the Docs - Documentation Status
+
 =====================
 Burin Logging Utility
 =====================
