@@ -14,8 +14,8 @@ from .._threading import _BurinLock
 
 
 def basic_config(*, datefmt=None, encoding=None, errors="backslashreplace",
-                 filedatefmt=None, fileformat=None, filelevel=None,
-                 filemode="a", filename=None, filerotate=False,
+                 filedatefmt=None, filedelay=False, fileformat=None,
+                 filelevel=None, filemode="a", filename=None, filerotate=False,
                  filerotatecount=4, filerotatesize=1048576, force=False,
                  format=None, handlers=None, level="WARNING", msgstyle="%",
                  stream=None, streamdatefmt=None, streamformat=None,
@@ -71,6 +71,9 @@ def basic_config(*, datefmt=None, encoding=None, errors="backslashreplace",
                         handler.  If this is **None** than the general
                         *datefmt* argument is used instead.
     :type filedatefmt: str
+    :param filedelay: Whether to delay opening the file until the first record
+                      is emitted.  (Default = **False**)
+    :type filedelay: bool
     :param fileformat: The format string to use specifically for the file
                        handler.  If this is **None** than the general *format*
                        argument is used instead.
@@ -193,10 +196,12 @@ def basic_config(*, datefmt=None, encoding=None, errors="backslashreplace",
                                                        maxBytes=filerotatesize,
                                                        backupCount=filerotatecount,
                                                        encoding=encoding,
+                                                       delay=filedelay,
                                                        errors=errors)
             else:
                 fileHandler = BurinFileHandler(filename, mode=filemode,
-                                               encoding=encoding, errors=errors)
+                                               encoding=encoding,
+                                               delay=filedelay, errors=errors)
 
             # Set the level on the handler if a specific file level was
             # received
