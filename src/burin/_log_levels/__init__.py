@@ -73,8 +73,8 @@ def get_level_name(level):
         return result
 
     if str(level) == level:
-        level = level.upper()
-        result = _nameToLevel.get(level)
+        upperLevel = level.upper()
+        result = _nameToLevel.get(upperLevel)
         if result is not None:
             return result
     return f"Level {level}"
