@@ -12,7 +12,7 @@ import atexit
 from ._config import basic_config
 from ._handlers import _handlerList
 from ._log_levels import CRITICAL, DEBUG, ERROR, INFO, WARNING, _check_level
-from ._logging import get_logger, root
+from ._loggers import get_logger, root
 from ._state import raiseExceptions, _set_src_dir
 
 

@@ -47,8 +47,5 @@ setLoggerClass = set_logger_class
 
 
 __all__ = ["BurinLogger", "get_logger", "getLogger", "root",
-           "BurinLoggerAdapter", "BurinBraceLogRecord", "BurinDollarLogRecord",
-           "BurinLogRecord", "get_log_record_factory", "getLogRecordFactory",
-           "make_log_record", "makeLogRecord", "set_log_record_factory",
-           "setLogRecordFactory", "logRecordFactories", "get_logger_class",
-           "getLoggerClass", "set_logger_class", "setLoggerClass"]
+           "BurinLoggerAdapter", "get_logger_class", "getLoggerClass",
+           "set_logger_class", "setLoggerClass"]

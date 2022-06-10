@@ -33,7 +33,7 @@ from ._log_records import (BurinBraceLogRecord, BurinDollarLogRecord,
                            get_log_record_factory, getLogRecordFactory,
                            make_log_record, makeLogRecord,
                            set_log_record_factory, setLogRecordFactory)
-from ._logging import (BurinLogger, BurinLoggerAdapter,
+from ._loggers import (BurinLogger, BurinLoggerAdapter,
                        get_logger, getLogger, get_logger_class, getLoggerClass,
                        set_logger_class, setLoggerClass)
 from ._state import (logMultiprocessing, logProcesses, logThreads,

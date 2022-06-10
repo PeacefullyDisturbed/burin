@@ -10,7 +10,7 @@ from .._exceptions import ConfigError
 from .._formatters import BurinFormatter, _styles
 from .._handlers import BurinFileHandler, BurinRotatingFileHandler, BurinStreamHandler
 from .._log_records import logRecordFactories
-from .._logging import root
+from .._loggers import root
 from .._threading import _BurinLock
 
 

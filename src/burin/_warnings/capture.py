@@ -16,7 +16,7 @@ import warnings
 
 # Burin imports
 from .._handlers import BurinNullHandler
-from .._logging import get_logger
+from .._loggers import get_logger
 
 
 # Local warnings reference for use and to restore when stopping override; this
