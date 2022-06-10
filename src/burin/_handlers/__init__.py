@@ -13,7 +13,7 @@ from logging.handlers import (DEFAULT_HTTP_LOGGING_PORT, DEFAULT_SOAP_LOGGING_PO
 # Burin imports
 from .._log_levels import WARNING
 
-# Package Contents
+# Package contents
 from .base_rotating_handler import BurinBaseRotatingHandler
 from .buffering_handler import BurinBufferingHandler
 from .datagram_handler import BurinDatagramHandler

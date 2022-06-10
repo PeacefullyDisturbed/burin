@@ -12,7 +12,8 @@ the class used for creating the record is referred to as a log record factory.
 
 Unlike the standard :mod:`logging` package Burin allows for multiple log record
 factories to be set at once.  The factory that is used can be set on a per
-logger basis using the :attr:`BurinLogger.msgStyle` property.
+logger basis using the :attr:`BurinLogger.msgStyle` property; this should be
+the ``factoryKey`` of the record.
 
 The built-in log record factories for Burin are focused on allowing different
 styles of deferred formatting which is demonstrated in the
@@ -35,15 +36,14 @@ how a log message is processed.  An example of this is demonstrated in the
 BurinLogRecord
 --------------
 
-This is the default log record factory and should behave identically to
-:class:`logging.LogRecord`; though it is not a subclass of it.
+This is the base log record; and is not used as a log record factory.  It is
+meant to be subclassed by other log records.  No formatting is done to the
+message.
 
 All other Burin log record classes are derived from this class.
 
 .. autoclass:: BurinLogRecord
     :members: get_message
-
-    .. autoattribute:: factoryKey
 
 -------------------
 BurinBraceLogRecord
@@ -55,6 +55,8 @@ This log record can be used for :meth:`str.format` style formatting.
     :class-doc-from: class
     :members: get_message
 
+    .. autoattribute:: factoryKey
+
 --------------------
 BurinDollarLogRecord
 --------------------
@@ -64,3 +66,19 @@ This log record can be used for :class:`string.Template` style formatting.
 .. autoclass:: BurinDollarLogRecord
     :class-doc-from: class
     :members: get_message
+
+    .. autoattribute:: factoryKey
+
+---------------------
+BurinPercentLogRecord
+---------------------
+
+This is the default log record factory and uses printf style formatting.
+
+This should behave identically to :class:`logging.LogRecord`.
+
+.. autoclass:: BurinPercentLogRecord
+    :class-doc-from: class
+    :members: get_message
+
+    .. autoattribute:: factoryKey

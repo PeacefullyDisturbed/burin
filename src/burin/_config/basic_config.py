@@ -9,7 +9,8 @@ See included LICENSE file for details.
 from .._exceptions import ConfigError
 from .._formatters import BurinFormatter, _styles
 from .._handlers import BurinFileHandler, BurinRotatingFileHandler, BurinStreamHandler
-from .._logging import logRecordFactories, root
+from .._log_records import logRecordFactories
+from .._logging import root
 from .._threading import _BurinLock
 
 

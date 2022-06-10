@@ -1,18 +1,13 @@
 """
-Burin Loggers and Log Records
+Burin Loggers and Manager
 
 Copyright (c) 2022 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
-# Package Contents
+# Package contents
 from .logger import BurinLogger, get_logger, getLogger, root
 from .logger_adapter import BurinLoggerAdapter
-from .log_records import (BurinBraceLogRecord, BurinDollarLogRecord,
-                          BurinLogRecord, get_log_record_factory,
-                          getLogRecordFactory, make_log_record, makeLogRecord,
-                          set_log_record_factory, setLogRecordFactory,
-                          logRecordFactories)
 from ._manager import _BurinManager
 
 

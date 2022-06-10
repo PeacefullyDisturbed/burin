@@ -14,7 +14,7 @@ See included LICENSE file for details.
 # Burin Imports
 from .._threading import _BurinLock
 from .._log_levels import _check_level
-from .log_records import logRecordFactories
+from .._log_records import logRecordFactories
 from .logger import BurinLogger
 
 
