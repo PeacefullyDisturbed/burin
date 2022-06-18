@@ -36,8 +36,7 @@ from ._log_records import (BurinBraceLogRecord, BurinDollarLogRecord,
 from ._loggers import (BurinLogger, BurinLoggerAdapter,
                        get_logger, getLogger, get_logger_class, getLoggerClass,
                        set_logger_class, setLoggerClass)
-from ._state import (logMultiprocessing, logProcesses, logThreads,
-                     raiseExceptions)
+from ._state import config
 from ._warnings import capture_warnings, captureWarnings
 
 
@@ -58,6 +57,5 @@ __all__ = ["critical", "debug", "disable", "error", "exception", "info", "log",
            "getLogRecordFactory", "make_log_record", "makeLogRecord",
            "set_log_record_factory", "setLogRecordFactory", "BurinLogger",
            "BurinLoggerAdapter", "get_logger", "getLogger", "get_logger_class",
-           "getLoggerClass", "set_logger_class", "setLoggerClass",
-           "logMultiprocessing", "logProcesses", "logThreads",
-           "raiseExceptions", "capture_warnings", "captureWarnings"]
+           "getLoggerClass", "set_logger_class", "setLoggerClass", "config",
+           "capture_warnings", "captureWarnings"]

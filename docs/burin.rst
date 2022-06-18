@@ -22,8 +22,9 @@ Within Burin everything needed for normal usage is available on the top-level
 modules from within Burin.
 
 Formatters, loggers, and handlers are all documented in their own sections.
-This page will focus on the :ref:`burin:Constants`, :ref:`burin:Attributes`,
-and :ref:`burin:Functions` that are available directly on the ``burin`` module.
+This page will focus on the :ref:`burin:Constants`,
+:ref:`burin:Config Attributes`, and :ref:`burin:Functions` that are available
+directly on the ``burin`` module.
 
 ---------
 Constants
@@ -59,33 +60,46 @@ straight integer values.
 .. data:: NOTSET
     :value: 0
 
-----------
-Attributes
-----------
+-----------------
+Config Attributes
+-----------------
 
-There are a handful of attributes on the Burin module that control some aspects
-of logging.  Most of these control whether some data is available for inclusion
-in logs or not.
+There are a handful of attributes that control some aspects of logging.  These
+can be configured through the ``burin.config`` object.
 
-.. data:: logMultiprocessing
+Most of these control whether some data is available for inclusion in logs or
+not.
+
+.. note::
+
+    This differs slightly from :mod:`logging` where the attributes are directly
+    on the module.
+
+.. attribute:: burin.config.logMultiprocessing
     :value: True
 
-    Whether multiprocessing details should be available for inclusion in logs.
+    Whether multiprocessing info should be available for inclusion in logs.
+    Whatever value is set for this will be automatically converted using
+    :func:`bool`.
 
-.. data:: logProcesses
+.. attribute:: burin.config.logProcesses
     :value: True
 
-    Whether process details should be available for inclusion in logs.
+    Whether process info should be available for inclusion in logs. Whatever
+    value is set for this will be automatically converted using :func:`bool`.
 
-.. data:: logThreads
+.. attribute:: burin.config.logThreads
     :value: True
 
-    Whether threading details should be available for inclusion in logs.
+    Whether threading info should be available for inclusion in logs. Whatever
+    value is set for this will be automatically converted using :func:`bool`.
 
-.. data:: raiseExceptions
+.. attribute:: burin.config.raiseExceptions
     :value: True
 
-    Used to set if exceptions during handling should be propagated or ignored.
+    Whether exceptions during handling should be propagated or ignored.
+    Whatever value is set for this will be automatically converted using
+    :func:`bool`.
 
 ---------
 Functions

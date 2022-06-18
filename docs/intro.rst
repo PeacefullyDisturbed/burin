@@ -24,15 +24,18 @@ standard :mod:`logging` module.
   is used can be set per logger instance to allow for greater customisation.
 * :class:`BurinLoggerAdapter` instances will merge *extra* values from logging
   calls with the pre-set values from instantiation; nesting built-in adapters
-  is actually useful.
+  can actually be useful now.
 * :class:`BurinSocketHandler` and :class:`BurinDatagramHandler` by default use
   pickling protocol version **4** instead of **1**.  This can be set to a
   different protocol version when creating the handler.
 * All methods and functions are *underscore_separated*, but *camelCase* aliases
   are available for an easier transition from the standard library.
+* Logging configuration attributes ``logMultiproccessing``, ``logProcesses``,
+  ``logThreads``, and ``raiseExceptions`` are on a ``burin.config`` object
+  instead of directly on the module.
 * Deprecated methods such as ``fatal`` and ``warn`` are not implemented.
 
-There are several minor differences which are internal to Burin and not
+There are several other differences which are internal to Burin and not
 documented here.  Just be sure to read the documentation if you are going to
 create subclasses, or read the docstrings in the code if accessing internal
 classes and methods.

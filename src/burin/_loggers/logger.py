@@ -23,7 +23,7 @@ from .._exceptions import FactoryError
 from .._handlers import lastResort
 from .._log_levels import CRITICAL, DEBUG, ERROR, INFO, NOTSET, WARNING, get_level_name, _check_level
 from .._log_records import logRecordFactories
-from .._state import raiseExceptions, _internals
+from .._state import config, _internals
 from .._threading import _BurinLock
 
 
@@ -260,7 +260,7 @@ class BurinLogger(Filterer):
             if lastResort:
                 if record.levelno >= lastResort.level:
                     lastResort.handle(record)
-            elif raiseExceptions and not self.manager.emittedNoHandlerWarning:
+            elif config.raiseExceptions and not self.manager.emittedNoHandlerWarning:
                 sys.stderr.write("No handlers could be found for logger "
                                  f"'{self.name}'")
                 self.manager.emittedNoHandlerWarning = True

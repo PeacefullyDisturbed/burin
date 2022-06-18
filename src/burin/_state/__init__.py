@@ -11,17 +11,86 @@ import os
 import time
 
 
-#: Whether multiprocessing details should be available for inclusion in logs
-logMultiprocessing = True
+class _BurinConfig:
+    """
+    Stores configuration values for Burin.
 
-#: Wheter process details should be available for inclusion in logs
-logProcesses = True
+    There should only be one instance of this within Burin and it contains the
+    general configuration values that can be adjusted.
+    """
 
-#: Whether threading details should be available for inclusion in logs
-logThreads = True
+    def __init__(self):
+        """
+        Sets the initial configuration values.
+        """
 
-#: Used to set if exceptions during handling should be propagated or ignored
-raiseExceptions = True
+        self.__logMultiprocessing = True
+        self.__logProcesses = True
+        self.__logThreads = True
+        self.__raiseExceptions = True
+
+    @property
+    def logMultiprocessing(self):
+        """
+        Whether multiprocessing info should be available for inclusion in logs.
+
+        Whatever value is set for this will be automatically converted using
+        :func:`bool`.
+        """
+
+        return self.__logMultiprocessing
+
+    @logMultiprocessing.setter
+    def logMultiprocessing(self, value):
+        self.__logMultiprocessing = bool(value)
+
+    @property
+    def logProcesses(self):
+        """
+        Whether process info should be available for inclusion in logs.
+
+        Whatever value is set for this will be automatically converted using
+        :func:`bool`.
+        """
+
+        return self.__logProcesses
+
+    @logProcesses.setter
+    def logProcesses(self, value):
+        self.__logProcesses = bool(value)
+
+    @property
+    def logThreads(self):
+        """
+        Whether threading info should be available for inclusion in logs.
+
+        Whatever value is set for this will be automatically converted using
+        :func:`bool`.
+        """
+
+        return self.__logThreads
+
+    @logThreads.setter
+    def logThreads(self, value):
+        self.__logThreads = bool(value)
+
+    @property
+    def raiseExceptions(self):
+        """
+        Whether exceptions during handling should be propagated or ignored.
+
+        Whatever value is set for this will be automatically converted using
+        :func:`bool`.
+        """
+
+        return self.__raiseExceptions
+
+    @raiseExceptions.setter
+    def raiseExceptions(self, value):
+        self.__raiseExceptions = bool(value)
+
+
+config = _BurinConfig()
 
 # Base for calculating the relative time of events
 _internals = {
@@ -51,8 +120,7 @@ def _set_src_dir(obj):
     _internals["srcDir"] = __osPath.dirname(__osPath.normcase(__inspect.getfile(obj)))
 
 
-__all__ = ["logMultiprocessing", "logProcesses", "logThreads",
-           "raiseExceptions"]
+__all__ = ["config"]
 
 
 # Clean up some things that aren't part of this package

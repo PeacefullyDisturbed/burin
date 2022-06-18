@@ -20,7 +20,7 @@ import sys
 
 # Burin Imports
 from .._log_levels import get_level_name
-from .._state import logMultiprocessing, logProcesses, logThreads, _internals
+from .._state import config, _internals
 
 
 class BurinLogRecord:
@@ -113,14 +113,14 @@ class BurinLogRecord:
             self.filename = pathname
             self.module = "Unknown module"
 
-        if logThreads:
+        if config.logThreads:
             self.thread = threading.get_ident()
             self.threadName = threading.current_thread().name
         else:
             self.thread = None
             self.threadName = None
 
-        if logMultiprocessing:
+        if config.logMultiprocessing:
             self.processName = "MainProcess"
             multiProcessing = sys.modules.get("multiprocessing")
             if multiProcessing is not None:
@@ -131,7 +131,7 @@ class BurinLogRecord:
         else:
             self.processName = None
 
-        if logProcesses and hasattr(os, "getpid"):
+        if config.logProcesses and hasattr(os, "getpid"):
             self.process = os.getpid()
         else:
             self.process = None

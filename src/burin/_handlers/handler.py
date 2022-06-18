@@ -21,7 +21,7 @@ import traceback
 # Burin Imports
 from .._formatters import _defaultFormatter
 from .._log_levels import get_level_name, _check_level
-from .._state import raiseExceptions, _internals
+from .._state import config, _internals
 from .._threading import _BurinLock, _register_at_fork_reinit_lock
 from ._references import _add_handler_ref, _handlers
 
@@ -164,7 +164,7 @@ class BurinHandler(Handler):
         :type record: BurinLogRecord
         """
 
-        if raiseExceptions and sys.stderr:  # Python issue 13807
+        if config.raiseExceptions and sys.stderr:  # Python issue 13807
             excType, excValue, excTrace = sys.exc_info()
             try:
                 sys.stderr.write("--- Burin Logging error ---\n")
