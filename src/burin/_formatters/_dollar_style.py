@@ -102,7 +102,7 @@ class _BurinDollarStyle(_BurinPercentStyle):
 
         values = record.__dict__ if self._defaults is None else {**self._defaults, **record.__dict__}
 
-        self._tpl.substitute(values)
+        return self._tpl.substitute(values)
 
     # Aliases for better compatibility to replace standard library logging
     asctime_format = asctimeFormat
