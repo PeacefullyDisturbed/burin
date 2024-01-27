@@ -36,7 +36,7 @@ class BurinBufferingFormatter(BufferingFormatter):
         if linefmt:
             self.linefmt = linefmt
         else:
-            linefmt = _defaultFormatter
+            self.linefmt = _defaultFormatter
 
     # Alias methods from the standard library formatter
     format_header = BufferingFormatter.formatHeader
