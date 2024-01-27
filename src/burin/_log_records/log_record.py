@@ -102,7 +102,7 @@ class BurinLogRecord:
         self.lineno = lineno
         self.funcName = func
         self.created = recordTime
-        self.msecs = (recordTime - int(recordTime)) * 1000
+        self.msecs = int((recordTime - int(recordTime)) * 1000) + 0.0   # See CPython gh-89047
         self.relativeCreated = (self.created - _internals["startTime"]) * 1000
 
         self.pathname = pathname
