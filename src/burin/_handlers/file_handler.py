@@ -116,9 +116,8 @@ class BurinFileHandler(BurinStreamHandler, FileHandler):
         """
 
         # Open the stream if needed
-        if self.stream is None:
-            if self.mode != "w" or not self._closed:
-                self.stream = self._open()
+        if self.stream is None and (self.mode != "w" or not self._closed):
+            self.stream = self._open()
 
         if self.stream:
             BurinStreamHandler.emit(self, record)

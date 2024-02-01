@@ -111,6 +111,7 @@ class BurinTimedRotatingFileHandler(BurinBaseRotatingHandler, TimedRotatingFileH
         """
 
         encoding = io.text_encoding(encoding)
+        weekdayLength = 2
         BurinBaseRotatingHandler.__init__(self, filename, "a", encoding=encoding,
                                           delay=delay, errors=errors)
         self.when = when.upper()
@@ -132,13 +133,13 @@ class BurinTimedRotatingFileHandler(BurinBaseRotatingHandler, TimedRotatingFileH
             self.interval = 60 * 60  # one hour
             self.suffix = "%Y-%m-%d_%H"
             self.extMatch = r"^\d{4}-\d{2}-\d{2}_\d{2}(\.\w+)?$"
-        elif self.when == "D" or self.when == "MIDNIGHT":
+        elif self.when in ("D", "MIDNIGHT"):
             self.interval = 60 * 60 * 24  # one day
             self.suffix = "%Y-%m-%d"
             self.extMatch = r"^\d{4}-\d{2}-\d{2}(\.\w+)?$"
         elif self.when.startswith("W"):
             self.interval = 60 * 60 * 24 * 7  # one week
-            if len(self.when) != 2:
+            if len(self.when) != weekdayLength:
                 raise ValueError("You must specify a day for weekly rollover "
                                  f"from 0 to 6 (0 is Monday): {self.when}")
             if self.when[1] < "0" or self.when[1] > "6":
@@ -157,10 +158,7 @@ class BurinTimedRotatingFileHandler(BurinBaseRotatingHandler, TimedRotatingFileH
         # filename
         filename = self.baseFilename
 
-        if os.path.exists(filename):
-            mTime = os.stat(filename)[ST_MTIME]
-        else:
-            mTime = int(time.time())
+        mTime = os.stat(filename)[ST_MTIME] if os.path.exists(filename) else int(time.time())
         self.rolloverAt = self.compute_rollover(mTime)
 
     # Alias methods from the standard library handler

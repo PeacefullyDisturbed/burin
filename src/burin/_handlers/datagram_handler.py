@@ -70,13 +70,9 @@ class BurinDatagramHandler(BurinSocketHandler):
         :rtype: socket.socket
         """
 
-        if self.port is None:
-            family = socket.AF_UNIX
-        else:
-            family = socket.AF_INET
+        family = socket.AF_UNIX if self.port is None else socket.AF_INET
 
-        sock = socket.socket(family, socket.SOCK_DGRAM)
-        return sock
+        return socket.socket(family, socket.SOCK_DGRAM)
 
     def send(self, msg):
         """

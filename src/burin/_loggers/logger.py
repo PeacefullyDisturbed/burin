@@ -243,17 +243,14 @@ class BurinLogger(Filterer):
         handlersFound = 0
 
         # Propagate through any parents to this logger.
-        while logger:
+        while logger is not None:
             for handler in logger.handlers:
                 handlersFound += 1
 
                 if record.levelno >= handler.level:
                     handler.handle(record)
 
-            if not logger.propagate:
-                logger = None
-            else:
-                logger = logger.parent
+            logger = logger.parent if logger.propagate else None
 
         # Use a basic last resort handler if no others were found.
         if handlersFound == 0:
@@ -481,10 +478,11 @@ class BurinLogger(Filterer):
             if logger.handlers:
                 hasHandlers = True
                 break
-            elif not logger.propagate:
+
+            if not logger.propagate:
                 break
-            else:
-                logger = logger.parent
+
+            logger = logger.parent
 
         return hasHandlers
 

@@ -40,20 +40,13 @@ doc = [
 Documentation = "https://burin.readthedocs.io/"
 Source = "https://github.com/PeacefullyDisturbed/burin"
 
-[tool.ruff]
-fix = false
-line-length = 119
-select = ["E", "F", "W"]
-src = ["src"]
-
-[tool.ruff.format]
-line-ending = "lf"
-
-[tool.ruff.lint.pycodestyle]
-max-doc-length = 79
+### Hatch ###
 
 [tool.hatch.envs.default]
 features = ["dev"]
+
+[tool.hatch.envs.default.scripts]
+lint = "ruff check {args}"
 
 [tool.hatch.envs.doc]
 features = ["doc"]
@@ -63,3 +56,22 @@ make = "cd docs && make {args}"
 
 [tool.hatch.version]
 path = "src/burin/__init__.py"
+
+### Ruff ###
+
+[tool.ruff]
+fix = false
+ignore = ["D2", "D4", "PLR0913", "S110", "S112", "SIM105"]
+line-length = 119
+select = ["A", "ARG", "B", "C4", "C90", "D", "E", "F", "PERF", "PL", "Q", "RET", "S", "SIM", "W", "YTT"]
+src = ["src"]
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 79
+
+[tool.ruff.per-file-ignores]
+"*__init__.py" = ["F401"]
+"docs/conf.py" = ["A001", "E402"]

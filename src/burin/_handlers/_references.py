@@ -45,7 +45,7 @@ def _remove_handler_ref(handler):
 
     if lock and handlerList:
         with lock:
-            try:
+            try:  # noqa: SIM105
                 handlerList.remove(handler)
             except ValueError:
                 pass

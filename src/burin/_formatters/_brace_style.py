@@ -37,7 +37,7 @@ class _BurinBraceStyle(_BurinPercentStyle):
     asctimeSearch = "{asctime"
     defaultFormat = "{message}"
     fmtSpec = re.compile(r"^(.?[<>=^])?[+ -]?#?0?(\d+|{\w+})?[,_]?(\.(\d+|{\w+}))?[bcdefgnosx%]?$", re.I)
-    fieldSpec = re.compile(r'^(\d+|\w+)(\.\w+|\[[^]]+\])*$')
+    fieldSpec = re.compile(r"^(\d+|\w+)(\.\w+|\[[^]]+\])*$")
 
     def validate(self):
         """
@@ -51,7 +51,7 @@ class _BurinBraceStyle(_BurinPercentStyle):
         try:
             # Go through each field in the format string and ensure it matches
             # the correct format for { style formatting.
-            for literal, field, spec, conversion in _strFormatter.parse(self._fmt):
+            for _literal, field, spec, conversion in _strFormatter.parse(self._fmt):
                 if field:
                     if not self.fieldSpec.match(field):
                         raise FormatError(f"Invalid field name/expression: {field!r}")
@@ -63,7 +63,7 @@ class _BurinBraceStyle(_BurinPercentStyle):
                 if spec and not self.fmtSpec.match(spec):
                     raise FormatError(f"Bad specifier: {spec!r}")
         except FormatError as err:
-            raise FormatError(f"Invalid format: {err}")
+            raise FormatError(f"Invalid format: {err}") from None
 
         if not fields:
             raise FormatError("Invalid format: no fields")

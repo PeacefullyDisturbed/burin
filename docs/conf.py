@@ -1,3 +1,10 @@
+"""
+Sphinx documentation build configuration for Burin project.
+
+Copyright (c) 2024 William Foster with BSD 3-Clause License
+See included LICENSE file for details.
+"""
+
 # -- Path setup --------------------------------------------------------------
 
 import os
@@ -8,8 +15,8 @@ onRTD = os.environ.get("READTHEDOCS") == "True"
 
 # -- Project information -----------------------------------------------------
 
-import burin  # noqa: E402
-from datetime import datetime  # noqa: E402
+import burin
+from datetime import datetime
 
 docBuildDatetime = datetime.now()
 
@@ -66,4 +73,4 @@ autosummary_generate = False
 
 # -- Options for intersphinx -------------------------------------------------
 
-intersphinx_mapping = {"python": ('https://docs.python.org/3', None)}
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}

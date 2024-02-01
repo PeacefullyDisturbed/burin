@@ -40,7 +40,7 @@ class _BurinPlaceholder:
         :type childLogger: BurinLogger | _BurinPlaceholder
         """
 
-        self.loggerMap = { childLogger: None }  # noqa: E201, E202
+        self.loggerMap = {childLogger: None}
 
     def append(self, childLogger):
         """
@@ -185,11 +185,10 @@ class _BurinManager:
                     self.loggerDict[name] = logger
                     self._fixup_children(placeHolder, logger)
                     self._fixup_parents(logger)
-                else:
+                elif msgStyle is not None and msgStyle != logger.msgStyle:
                     # If the logger's msgStyle is different that what was
                     # received then change it
-                    if msgStyle is not None and msgStyle != logger.msgStyle:
-                        logger.msgStyle = msgStyle
+                    logger.msgStyle = msgStyle
             else:
                 # Create the logger if nothing was found
                 logger = self._loggerClass(name, msgStyle=newMsgStyle)
@@ -256,7 +255,7 @@ class _BurinManager:
         name = logger.name
         nameLength = len(name)
 
-        for child in placeHolder.loggerMap.keys():
+        for child in placeHolder.loggerMap:
             if child.parent.name[:nameLength] != name:
                 logger.parent = child.parent
                 child.parent = logger

@@ -32,7 +32,7 @@ from .stream_handler import BurinStreamHandler
 from .syslog_handler import BurinSyslogHandler
 from .timed_rotating_file_handler import BurinTimedRotatingFileHandler
 from .watched_file_handler import BurinWatchedFileHandler
-from ._references import _handlerList  # noqa: F401
+from ._references import _handlerList
 from ._stderr_handler import _BurinStderrHandler
 
 

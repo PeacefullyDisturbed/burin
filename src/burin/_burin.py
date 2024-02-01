@@ -266,7 +266,7 @@ def shutdown(handlerList=None):
                     pass
                 finally:
                     handler.release()
-        except:  # noqa: E722
+        except:  # noqa: E722 PERF203
             # Ignore unless we're raising exceptions
             if config.raiseExceptions:
                 raise

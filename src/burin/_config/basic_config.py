@@ -5,6 +5,8 @@ Copyright (c) 2022 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
+
+
 # Burin imports
 from .._exceptions import ConfigError
 from .._formatters import BurinFormatter, _styles
@@ -14,11 +16,11 @@ from .._loggers import root
 from .._threading import _BurinLock
 
 
-def basic_config(*, datefmt=None, encoding=None, errors="backslashreplace",
+def basic_config(*, datefmt=None, encoding=None, errors="backslashreplace",  # noqa: C901
                  filedatefmt=None, filedelay=False, fileformat=None,
                  filelevel=None, filemode="a", filename=None, filerotate=False,
                  filerotatecount=4, filerotatesize=1048576, force=False,
-                 format=None, handlers=None, level="WARNING", msgstyle="%",
+                 format=None, handlers=None, level="WARNING", msgstyle="%",  # noqa: A002
                  stream=None, streamdatefmt=None, streamformat=None,
                  streamlevel=None, style="%"):
     """
@@ -159,7 +161,7 @@ def basic_config(*, datefmt=None, encoding=None, errors="backslashreplace",
                               f"{', '.join(logRecordFactories.keys())}")
 
         # Use a default format if none is set
-        format = format if format is not None else _styles[style]["default"]
+        format = format if format is not None else _styles[style]["default"]  # noqa: A001
 
         # Get the basic formatter setup
         basicFormatter = BurinFormatter(format, datefmt, style)

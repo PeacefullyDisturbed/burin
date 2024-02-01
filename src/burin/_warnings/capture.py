@@ -36,14 +36,13 @@ def capture_warnings(capture):
     :type capture: bool
     """
 
-    global _warningsShowwarning
+    global _warningsShowwarning  # noqa: PLW0603
 
     if capture:
         if _warningsShowwarning is None:
             _warningsShowwarning = warnings.showwarning
             warnings.showwarning = _showarning
-    else:
-        if _warningsShowwarning is not None:
+    elif _warningsShowwarning is not None:
             warnings.showwarning = _warningsShowwarning
             _warningsShowwarning = None
 

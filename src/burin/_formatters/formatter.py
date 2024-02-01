@@ -223,10 +223,8 @@ class BurinFormatter(Formatter):
         recordText = self.format_message(record)
 
         # Format exception info if needed.
-        if record.exc_info:
-            # Only get the traceback text once.
-            if not record.exc_text:
-                record.exc_text = self.format_exception(record.exc_info)
+        if record.exc_info and not record.exc_text:
+            record.exc_text = self.format_exception(record.exc_info)
 
         # If there is exception info add it to the record text.
         if record.exc_text:

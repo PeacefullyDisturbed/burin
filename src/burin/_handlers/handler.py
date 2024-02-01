@@ -137,10 +137,7 @@ class BurinHandler(Handler):
         :rtype: str
         """
 
-        if self.formatter:
-            fmt = self.formatter
-        else:
-            fmt = _defaultFormatter
+        fmt = self.formatter if self.formatter is not None else _defaultFormatter
 
         return fmt.format(record)
 

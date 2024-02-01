@@ -7,7 +7,7 @@ See included LICENSE file for details.
 
 # Package contents
 from .buffering_formatter import BurinBufferingFormatter
-from .formatter import BurinFormatter, _defaultFormatter, _styles  # noqa: F401
+from .formatter import BurinFormatter, _defaultFormatter, _styles
 
 
 __all__ = ["BurinBufferingFormatter", "BurinFormatter"]

@@ -17,7 +17,7 @@ from ._lock import _BurinLock
 # after forking in some situations (Python issue #36533).
 if not hasattr(os, "register_at_fork"):
     # register_at_fork is Unix only and 3.7+ only, if not found do nothing
-    def _register_at_fork_reinit_lock(instance):
+    def _register_at_fork_reinit_lock(instance):  # noqa: ARG001
         """
         This is a stub class that does nothing.
 

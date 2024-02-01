@@ -64,7 +64,7 @@ class _BurinPercentStyle:
         try:
             return self._format(record)
         except KeyError as err:
-            raise FormatError(f"Formatting field not found in record: {err}")
+            raise FormatError(f"Formatting field not found in record: {err}") from KeyError
 
     def uses_time(self):
         """

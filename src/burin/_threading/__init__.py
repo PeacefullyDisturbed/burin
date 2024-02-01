@@ -6,8 +6,8 @@ See included LICENSE file for details.
 """
 
 # Package contents
-from ._fork_protection import _register_at_fork_reinit_lock  # noqa: F401
-from ._lock import _BurinLock  # noqa: F401
+from ._fork_protection import _register_at_fork_reinit_lock
+from ._lock import _BurinLock
 
 
 __all__ = []
