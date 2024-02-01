@@ -85,7 +85,7 @@ def exception(msg, *args, exc_info=True, logger=None, **kwargs):
     :type logger: str
     """
 
-    log(ERROR, msg, exc_info=exc_info, logger=logger, **kwargs)
+    log(ERROR, msg, *args, exc_info=exc_info, logger=logger, **kwargs)
 
 def info(msg, *args, logger=None, **kwargs):
     """

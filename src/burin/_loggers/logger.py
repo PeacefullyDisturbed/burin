@@ -320,7 +320,7 @@ class BurinLogger(Filterer):
         :type msg: str
         """
 
-        self.error(msg, exc_info=exc_info, **kwargs)
+        self.error(msg, *args, exc_info=exc_info, **kwargs)
 
     def find_caller(self, stack_info=False, stacklevel=1):
         """
