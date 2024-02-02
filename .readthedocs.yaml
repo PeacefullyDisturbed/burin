@@ -10,6 +10,13 @@ formats:
     - htmlzip
     - pdf
 
+python:
+    install:
+        - method: pip
+          path: .
+          extra_requirements:
+            - doc
+
 sphinx:
     builder: html
     configuration: docs/conf.py
