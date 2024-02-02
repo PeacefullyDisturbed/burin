@@ -86,7 +86,7 @@ lint = "ruff check {args}"
 features = ["doc"]
 
 [tool.hatch.envs.doc.scripts]
-make = "cd docs && make {args}"
+make = "cd docs && make {args:html}"
 
 [tool.hatch.envs.test]
 features = ["test"]

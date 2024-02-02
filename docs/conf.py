@@ -32,7 +32,8 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.autosummary",
-    "sphinx.ext.intersphinx"
+    "sphinx.ext.intersphinx",
+    "sphinx_rtd_theme"
 ]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "__pycache__"]
 highlight_language = "none"
