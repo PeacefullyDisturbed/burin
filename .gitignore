@@ -1,5 +1,5 @@
 ﻿dist
 __pycache__
-.pypirc
 *.wpr
 *.wpu
+.coverage

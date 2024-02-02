@@ -36,16 +36,48 @@ doc = [
     "Sphinx ~=7.2.6",
     "sphinx-rtd-theme ~=2.0.0"
 ]
+# Test dependecies must support all supported Python versions
+test = [
+    "coverage[toml] ~=7.2.7; python_version =='3.7'",
+    "coverage[toml] ~=7.4.1; python_version >='3.8' and python_version < '3.11'",
+    "coverage ~=7.4.1; python_version >='3.11'",
+    "pytest ~=7.4.4; python_version =='3.7'",
+    "pytest ~=8.0.0; python_version >='3.8'"
+]
 
 
 [project.urls]
 Documentation = "https://burin.readthedocs.io/"
 Source = "https://github.com/PeacefullyDisturbed/burin"
 
+### Coverage ###
+
+[tool.coverage.run]
+dynamic_context = "test_function"
+parallel = true
+source_pkgs = ["burin", "tests"]
+
+[tool.coverage.paths]
+burin = ["src/burin", "*/burin/src/burin"]
+tests = ["tests", "*/burin/tests"]
+
+[tool.coverage.report]
+show_missing = true
+
 ### Hatch ###
 
+[tool.hatch.envs.coverage]
+features = ["test"]
+
+[tool.hatch.envs.coverage.scripts]
+combine = "- coverage combine"
+report = [
+    "combine",
+    "coverage report {args}"
+]
+
 [tool.hatch.envs.default]
-features = ["dev"]
+features = ["dev", "test"]
 
 [tool.hatch.envs.default.scripts]
 lint = "ruff check {args}"
@@ -56,6 +88,16 @@ features = ["doc"]
 [tool.hatch.envs.doc.scripts]
 make = "cd docs && make {args}"
 
+[tool.hatch.envs.test]
+features = ["test"]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.test.scripts]
+cov = "coverage run {args} -m pytest"
+run = "pytest {args}"
+
 [tool.hatch.version]
 path = "src/burin/__init__.py"
 
@@ -65,15 +107,21 @@ path = "src/burin/__init__.py"
 fix = false
 ignore = ["D2", "D4", "PLR0913", "S110", "S112", "SIM105"]
 line-length = 119
-select = ["A", "ARG", "B", "C4", "C90", "D", "E", "F", "PERF", "PL", "Q", "RET", "S", "SIM", "W", "YTT"]
+select = ["A", "ARG", "B", "C4", "C90", "D", "E", "F", "PERF", "PL", "PT", "Q", "RET", "S", "SIM", "W", "YTT"]
 src = ["src"]
 
 [tool.ruff.format]
 line-ending = "lf"
 
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
 [tool.ruff.lint.pycodestyle]
 max-doc-length = 79
 
 [tool.ruff.per-file-ignores]
-"*__init__.py" = ["F401"]
+"*/__init__.py" = ["F401"]
 "docs/conf.py" = ["A001", "E402"]
+"src/*" = ["PT"]
+"tests/*" = ["S101"]
