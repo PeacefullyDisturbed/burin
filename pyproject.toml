@@ -12,11 +12,12 @@ classifiers = [
     "Natural Language :: English",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries"
 ]
 description = "Logging with added features and convenience."
@@ -24,9 +25,10 @@ dynamic = ["version"]
 keywords = ["logging"]
 license-files = {paths = ["LICENSE"]}
 readme = "README.rst"
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 
 [project.optional-dependencies]
+# Dev and Doc dependecies only support latest supported Python version
 dev = [
     "ruff ~=0.1.14"
 ]

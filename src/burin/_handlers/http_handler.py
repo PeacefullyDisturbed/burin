@@ -1,7 +1,7 @@
 """
 Burin HTTP Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
@@ -92,7 +92,7 @@ class BurinHTTPHandler(BurinHandler, HTTPHandler):
     # Alias methods from the standard library handler
     map_log_record = HTTPHandler.mapLogRecord
 
-    # HTTPHandler.getConnection was added in Python 3.9; so for 3.6, 3.7, and
+    # HTTPHandler.getConnection was added in Python 3.9; so for 3.7 and
     # 3.8 support it is recreated here (based on 3.10.2)
     def get_connection(self, host, secure):
         """

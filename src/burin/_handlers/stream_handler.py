@@ -1,7 +1,7 @@
 """
 Burin Stream Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
@@ -33,13 +33,6 @@ class BurinStreamHandler(BurinHandler, StreamHandler):
 
         This handler will not close the stream it is writing to as
         :obj:`sys.stdout` and :obj:`sys.stderr` are commonly used.
-
-    .. note::
-
-        This has the :meth:`BurinStreamHandler.set_stream` method (also
-        aliased as :meth:`BurinStreamHandler.setStream`); this was added to
-        the standard library in Python 3.7 but is available here for all Python
-        versions supported by Burin.
     """
 
     terminator = "\n"
@@ -60,35 +53,8 @@ class BurinStreamHandler(BurinHandler, StreamHandler):
             stream = sys.stderr
         self.stream = stream
 
-    # StreamHandler.setStream was added in Python 3.7; so for 3.6 support
-    # it is recreated here (based on 3.10.2)
-    def set_stream(self, stream):
-        """
-        Sets the *stream* for the handler to log too.
-
-        If the same *stream* that is *self.stream* is passed in then nothing is
-        done.
-
-        When replacing the old stream with a new stream the handler will flush
-        itself beforehand.
-
-        :param stream: The stream to set for the handler to use.
-        :type stream: io.TextIOBase
-        :returns: The old stream that was replaced or **None** if nothing was
-                  replaced.
-        :rtype: io.TextIOBase | None
-        """
-
-        if stream is self.stream:
-            oldStream = None
-        else:
-            oldStream = self.stream
-
-            with self.lock:
-                self.flush()
-                self.stream = stream
-
-        return oldStream
+    # Alias method from the standard library handler
+    set_stream = StreamHandler.setStream
 
     def __repr__(self):
         level = get_level_name(self.level)
@@ -100,6 +66,3 @@ class BurinStreamHandler(BurinHandler, StreamHandler):
             name += " "
 
         return f"<{self.__class__.__name__} {name}({level})>"
-
-    # Aliases for better compatibility to replace standard library logging
-    setStream = set_stream

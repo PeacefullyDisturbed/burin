@@ -1,7 +1,7 @@
 """
 Burin Fork Protection
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -16,13 +16,13 @@ from ._lock import _BurinLock
 # Adds some protections (when available) for handlers which can have issues
 # after forking in some situations (Python issue #36533).
 if not hasattr(os, "register_at_fork"):
-    # register_at_fork is Unix only and 3.7+ only, if not found do nothing
+    # register_at_fork is Unix only, if not found do nothing
     def _register_at_fork_reinit_lock(instance):  # noqa: ARG001
         """
         This is a stub class that does nothing.
 
         :func:`os.register_at_fork` is required for this fork protection to
-        work, but it is only available on Unix systems with Python 3.7+.
+        work, but it is only available on Unix systems.
         """
         pass
 else:

@@ -25,9 +25,9 @@ add features and simplify usage compared to the Python standard library
 Full Burin documentation is available at `Read the Docs
 <https://burin.readthedocs.io/>`_.
 
-Currently Python 3.6, 3.7, 3.8, 3.9, and 3.10 are all supported.  There are no
-dependencies or additional requirements for Burin and it should work on any
-platform that Python does.
+Currently Python 3.7, 3.8, 3.9, 3.10, 3.11, and 3.12 are all supported.  There
+are no dependencies or additional requirements for Burin and it should work on
+any platform that Python does.
 
 An important aspect of Burin is an easy migration that allows changing from the
 ``logging`` package to Burin without anything breaking in most use cases.

@@ -10,7 +10,7 @@ Burin is available on `PyPI <https://pypi.org/project/burin/>`_ and can be
 installed using any Python package manager such as ``pip``.
 
 Burin does not have any dependencies and is purely Python, so it should be
-usable in almost any CPython environment from version 3.6 - 3.10.  It may also
+usable in almost any CPython environment from version 3.7 - 3.12.  It may also
 work with other Python implementations, but has not been tested.
 
 --------------
