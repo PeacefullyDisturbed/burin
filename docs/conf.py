@@ -38,9 +38,6 @@ extensions = [
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "__pycache__"]
 highlight_language = "none"
 
-if not onRTD:
-    templates_path = ["_templates"]
-
 # -- Options for EPUB output -------------------------------------------------
 
 epub_show_urls = "no"
@@ -49,9 +46,6 @@ epub_show_urls = "no"
 
 html_theme_options = {}
 html_theme = "sphinx_rtd_theme"
-
-if not onRTD:
-    html_static_path = ["_static"]
 
 # -- Options for LaTeX output -------------------------------------------------
 
