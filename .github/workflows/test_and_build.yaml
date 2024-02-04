@@ -1,6 +1,11 @@
 name: Test and Build
 run-name: Running linter, tests, and builds
-on: [workflow_call, workflow_dispatch]
+on:
+    workflow_dispatch:
+    workflow_call:
+        secrets:
+            CODECOV_TOKEN:
+                required: false
 jobs:
     test_and_build:
         name: Run tests and builds
