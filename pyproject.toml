@@ -75,6 +75,10 @@ report = [
     "combine",
     "coverage report {args}"
 ]
+xml = [
+    "combine"
+    "coverage xml {args}"
+]
 
 [tool.hatch.envs.default]
 features = ["dev", "test"]
