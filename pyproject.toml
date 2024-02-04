@@ -30,7 +30,7 @@ requires-python = ">=3.7"
 [project.optional-dependencies]
 # Dev and Doc dependecies only support latest supported Python version
 dev = [
-    "ruff ~=0.1.14"
+    "ruff ~=0.2.0"
 ]
 doc = [
     "Sphinx ~=7.2.6",
@@ -109,23 +109,25 @@ path = "src/burin/__init__.py"
 
 [tool.ruff]
 fix = false
-ignore = ["D2", "D4", "PLR0913", "S110", "S112", "SIM105"]
 line-length = 119
-select = ["A", "ARG", "B", "C4", "C90", "D", "E", "F", "PERF", "PL", "PT", "Q", "RET", "S", "SIM", "W", "YTT"]
-src = ["src"]
+src = ["src", "test"]
 
 [tool.ruff.format]
 line-ending = "lf"
+
+[tool.ruff.lint]
+ignore = ["D2", "D4", "PLR0913", "S110", "S112", "SIM105"]
+select = ["A", "ARG", "B", "C4", "C90", "D", "E", "F", "PERF", "PL", "PT", "Q", "RET", "S", "SIM", "W", "YTT"]
 
 [tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = false
 mark-parentheses = false
 
-[tool.ruff.lint.pycodestyle]
-max-doc-length = 79
-
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "*/__init__.py" = ["F401"]
 "docs/conf.py" = ["A001", "E402"]
 "src/*" = ["PT"]
 "tests/*" = ["S101"]
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 79
