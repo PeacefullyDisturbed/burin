@@ -32,8 +32,8 @@ jobs:
               run: hatch run test:cov
             - name: Report Coverage
               run: |
-                hatch coverage:report
-                hatch coverage:xml
+                hatch run coverage:report
+                hatch run coverage:xml
             - name: Upload Coverage
               uses: codecov/codecov-action@v4
               with:
