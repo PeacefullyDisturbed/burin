@@ -10,6 +10,14 @@
     :target: https://pypi.org/project/burin/
     :alt: Python Versions
 
+.. image:: https://img.shields.io/github/actions/workflow/status/PeacefullyDisturbed/burin/push_check.yaml?branch=main&logo=github&label=main
+    :target: https://github.com/PeacefullyDisturbed/burin/actions/workflows/push_check.yaml
+    :alt: GitHub Actions Workflow Status
+
+.. image:: https://codecov.io/gh/PeacefullyDisturbed/burin/graph/badge.svg?token=E76T93FQ5F
+    :target: https://codecov.io/gh/PeacefullyDisturbed/burin
+    :alt: Codecov Coverage Percentage
+
 .. image:: https://img.shields.io/readthedocs/burin
     :target: https://burin.readthedocs.io/en/latest/?badge=latest
     :alt: Read the Docs - Documentation Status
