@@ -1,18 +1,13 @@
 name: Test and Build
 run-name: Running linter, tests, and builds
-on: workflow_dispatch
+on: [workflow_call, workflow_dispatch]
 jobs:
     test_and_build:
         name: Run tests and builds
         runs-on: ${{ matrix.os }}
-        continue-on-error: ${{ matrix.experimental }}
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest]
-                experimental: [false]
-                include:  # Haven't tested on MacOS yet
-                    - os: macos-latest
-                      experimental: true
+                os: [ubuntu-latest, windows-latest, macos-latest]
         steps:
             # Setup
             - name: Checkout repo
