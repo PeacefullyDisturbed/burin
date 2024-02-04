@@ -76,7 +76,7 @@ report = [
     "coverage report {args}"
 ]
 xml = [
-    "combine"
+    "combine",
     "coverage xml {args}"
 ]
 
