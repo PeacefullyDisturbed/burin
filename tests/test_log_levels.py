@@ -48,6 +48,14 @@ class TestLogLevels:
             assert burin.get_level_name(level) == name
             assert burin.get_level_name(name) == level
 
+    def test_names_to_level_mapping(self):
+        """
+        Tests the get_level_names_mapping function with current values.
+        """
+
+        for name, level in burin.get_level_names_mapping().items():
+            assert burin._log_levels._nameToLevel[name] == level
+
     def test_get_level_name_string_case(self):
         """
         Tests the get_level_name function with strings of difference cases.

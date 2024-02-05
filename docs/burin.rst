@@ -138,6 +138,7 @@ general purpose.
     error
     exception
     get_level_name
+    get_level_names_mapping
     get_log_record_factory
     get_logger
     get_logger_class
@@ -233,6 +234,8 @@ wrappers.
 .. autofunction:: disable
 
 .. autofunction:: get_level_name
+
+.. autofunction:: get_level_names_mapping
 
 ~~~~~~~~~~~~~~~~~~~~
 Warnings Integration

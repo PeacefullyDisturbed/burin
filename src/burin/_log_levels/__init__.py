@@ -1,7 +1,7 @@
 """
 Burin Log Levels
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -80,8 +80,22 @@ def get_level_name(level):
     return f"Level {level}"
 
 
+def get_level_names_mapping():
+    """
+    Gets the current log levels name to level mapping.
+
+    .. note::
+
+        In Python 3.11 :func:`logging.getLevelNamesMapping` was added to the
+        standard library; it is supported here for all versions of Python
+        compatible with Burin (including versions below 3.11).
+    """
+    return _nameToLevel.copy()
+
+
 # Aliases for better compatibility to replace standard library logging
 getLevelName = get_level_name
+getLevelNamesMapping = get_level_names_mapping
 
 
 def _check_level(level):
@@ -112,4 +126,5 @@ def _check_level(level):
 
 
 __all__ = ["CRITICAL", "DEBUG", "ERROR", "INFO", "NOTSET", "WARNING",
-           "get_level_name", "getLevelName"]
+           "get_level_name", "getLevelName", "get_level_names_mapping",
+           "getLevelNamesMapping"]

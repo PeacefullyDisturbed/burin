@@ -27,7 +27,8 @@ from ._handlers import (BurinBaseRotatingHandler, BurinBufferingHandler,
                         BurinSyslogHandler, BurinTimedRotatingFileHandler,
                         BurinWatchedFileHandler)
 from ._log_levels import (CRITICAL, DEBUG, ERROR, INFO, NOTSET, WARNING,
-                          get_level_name, getLevelName)
+                          get_level_name, getLevelName,
+                          get_level_names_mapping, getLevelNamesMapping)
 from ._log_records import (BurinBraceLogRecord, BurinDollarLogRecord,
                            BurinLogRecord, BurinPercentLogRecord,
                            get_log_record_factory, getLogRecordFactory,
@@ -52,6 +53,7 @@ __all__ = ["critical", "debug", "disable", "error", "exception", "info", "log",
            "BurinSyslogHandler", "BurinTimedRotatingFileHandler",
            "BurinWatchedFileHandler", "CRITICAL", "DEBUG", "ERROR", "INFO",
            "NOTSET", "WARNING", "get_level_name", "getLevelName",
+           "get_level_names_mapping", "getLevelNamesMapping",
            "BurinBraceLogRecord", "BurinDollarLogRecord", "BurinLogRecord",
            "BurinPercentLogRecord", "get_log_record_factory",
            "getLogRecordFactory", "make_log_record", "makeLogRecord",
