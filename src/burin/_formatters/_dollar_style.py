@@ -61,23 +61,28 @@ class _BurinDollarStyle(_BurinPercentStyle):
         """
         Validates the format string.
 
+        On Python versions 3.11+ this uses :meth:`string.Template.is_valid`
+        to determine if the format string is invalid.
+
         :raises FormatError: If validation of the format string fails.
         """
 
+        if hasattr(self._tpl, "is_valid") and not self._tpl.is_valid():
+            raise FormatError("Invalid format: Template string validity check failed")
+
         pattern = Template.pattern
-        fields = set()
+        validFields = False
 
         for match in pattern.finditer(self._fmt):
             matchGroups = match.groupdict()
 
-            if matchGroups["named"]:
-                fields.add(matchGroups["named"])
-            elif matchGroups["braced"]:
-                fields.add(matchGroups["braced"])
-            elif match.group(0) == "$":
-                raise FormatError("Invalid format: bare '$' not allowed")
+            if matchGroups["named"] or matchGroups["braced"] or matchGroups["escaped"]:
+                validFields = True
+                continue
 
-        if not fields:
+            raise FormatError(f"Invalid format: '{match.group(0)}' is not valid for Template pattern")
+
+        if not validFields:
             raise FormatError("Invalid format: no fields")
 
     def _format(self, record):
