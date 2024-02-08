@@ -1,7 +1,7 @@
 """
 Burin NT Event Log Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
@@ -73,7 +73,16 @@ class BurinNTEventLogHandler(BurinHandler, NTEventLogHandler):
             self.dllname = dllname
             self.logtype = logtype
 
-            self._welu.AddSourceToRegistry(appname, dllname, logtype)
+            # Admin privileges are required to add a source to the registry,
+            # so handle the case where this may fail even for a regular user
+            # adding to an existing source.
+            try:
+                self._welu.AddSourceToRegistry(appname, dllname, logtype)
+            except Exception as exc:
+                # Likely a pywintypes.error, but only raise the exception if
+                # it's not a 0x5 "ERROR_ACCESS_DENIED" error
+                if getattr(exc, "winerror", None) != 5:  # noqa: PLR2004
+                    raise
 
             self.deftype = win32evtlog.EVENTLOG_ERROR_TYPE
             self.typemap = {
