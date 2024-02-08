@@ -1,7 +1,7 @@
 """
 Burin Dollar Style Format
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
@@ -55,7 +55,7 @@ class _BurinDollarStyle(_BurinPercentStyle):
         :rtype: bool
         """
 
-        return self._fmt.find("$asctime") >= 0 or self._fmt.find(self.asctimeFormat) >= 0
+        return self._fmt.find("$asctime") >= 0 or self._fmt.find(self.asctimeSearch) >= 0
 
     def validate(self):
         """
