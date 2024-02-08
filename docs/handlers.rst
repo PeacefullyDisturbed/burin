@@ -222,6 +222,7 @@ BurinTimedRotatingFileHandler
 This handler can rotate log files based on a timing pattern.
 
 .. autoclass:: BurinTimedRotatingFileHandler
+    :members: should_rollover
 
 -----------------------
 BurinWatchedFileHandler

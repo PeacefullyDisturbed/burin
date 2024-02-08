@@ -1,7 +1,7 @@
 """
 Burin Timed Rotating File Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
@@ -165,4 +165,45 @@ class BurinTimedRotatingFileHandler(BurinBaseRotatingHandler, TimedRotatingFileH
     compute_rollover = TimedRotatingFileHandler.computeRollover
     do_rollover = TimedRotatingFileHandler.doRollover
     get_files_to_delete = TimedRotatingFileHandler.getFilesToDelete
-    should_rollover = TimedRotatingFileHandler.shouldRollover
+
+    def should_rollover(self, record):  # noqa: ARG002
+        """
+        Determines if a rollover should occur.
+
+        .. note::
+
+            The *record* parameter is not used, it is included to keep the
+            method signatures the same for all subclasses of
+            :class:`BurinBaseRotatingHandler`
+
+        .. note::
+
+            In Python 3.11
+            :meth:`logging.handlers.TimedRotatingFileHandler.shouldRollover`
+            was changed to ensure that if the target is not currently a regular
+            file the check is skipped and the next one is scheduled.
+            Previously checks simply ran and failed repeatedly.  This change is
+            incorporated here for all versions of Python compatible with Burin
+            (including versions below 3.11).
+
+        :param record: The log record.  (Not used)
+        :type record: BurinLogRecord
+        :returns: Whether a rollover is scheduled to occur.
+        :rtype: bool
+        """
+
+        currentTime = int(time.time())
+        if currentTime >= self.rolloverAt:
+            # Ensure only regular files are ever rolled over
+            if os.path.exists(self.baseFilename) and not os.path.isfile(self.baseFilename):
+                # Avoid repeated checks if existing file isn't a regular
+                # right now
+                self.rolloverAt = self.computeRollover(currentTime)
+                return False
+
+            return True
+
+        return False
+
+    # Aliases for better compatibility to replace standard library logging
+    shouldRollover = should_rollover

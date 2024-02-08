@@ -1,7 +1,7 @@
 """
 Burin Base Rotating Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -88,13 +88,22 @@ class BurinBaseRotatingHandler(BurinFileHandler, BaseRotatingHandler):
         except Exception:
             self.handle_error(record)
 
-    def should_rollover(self):
+    def should_rollover(self, record):
         """
         This method should check if the rotation of the file should be done.
 
         This should be implemented within a subclass and will only raise a
         :exc:`NotImplementedError` in this base class.
 
+        .. note::
+
+            The *record* parameter is needed for the
+            :class:`BurinRotatingFileHandler`, so to ensure the signature is
+            the same all subclasses should include it whether they use it or
+            not.
+
+        :param record: The log record.  (Not used for all subclasses)
+        :type record: BurinLogRecord
         :raises NotImplementedError: As this is not implemented in the base
                                      class.
         """
