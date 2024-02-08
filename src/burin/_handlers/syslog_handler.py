@@ -1,7 +1,7 @@
 """
 Burin Syslog Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
@@ -65,6 +65,42 @@ class BurinSyslogHandler(BurinHandler, SysLogHandler):
         self.address = address
         self.facility = facility
         self.socktype = socktype
+        self.socket = None
+
+    # Alias methods from the standard library handler
+    encode_priority = SysLogHandler.encodePriority
+    map_priority = SysLogHandler.mapPriority
+
+    def close(self):
+        """
+        Closes the handler and the syslog socket.
+        """
+
+        with self.lock:
+            if self.socket:
+                socket = self.socket
+                self.socket = None
+                socket.close()
+            BurinHandler.close(self)
+
+    def create_socket(self):
+        """
+        Try to create a socket and, if not datagram, connect to the other end.
+
+        This will be called automatically during initialization of the handler.
+        If it fails to connect at this point it is not considered an error.
+        The method will be called again when emitting an event if there is
+        still no socket connected.
+
+        .. note::
+
+            In Python 3.11 :meth:`logging.handlers.SysLogHandler.createSocket`
+            was added to the standard library; it is supported here for all
+            versions of Python compatible with Burin (including versions below
+            3.11).
+        """
+        address = self.address
+        socktype = self.socktype
 
         if isinstance(address, str):
             self.unixsocket = True
@@ -109,15 +145,57 @@ class BurinSyslogHandler(BurinHandler, SysLogHandler):
             self.socket = sock
             self.socktype = socktype
 
-    # Alias methods from the standard library handler
-    encode_priority = SysLogHandler.encodePriority
-    map_priority = SysLogHandler.mapPriority
-
-    def close(self):
+    def emit(self, record):
         """
-        Closes the handler and the syslog socket.
+        Emits a log record to the Syslog socket.
+
+        The log record will be formatted and sent to the Syslog server.  If
+        exception information is present in the log record it will *NOT* be
+        sent along to the server.
+
+        .. note::
+
+            If a socket connection was not established earlier this will
+            attempt to complete it again before emitting the record.  This
+            functionality was added in the Python 3.11 standard library and is
+            supported here for all versions of Python compatible with Burin
+            (including versions below 3.11)
+
+        :param record: The log record to emit.
+        :type record: BurinLogRecord
         """
 
-        with self.lock:
-            self.socket.close()
-            BurinHandler.close(self)
+        try:
+            msg = self.format(record)
+            if self.ident:
+                msg = self.ident + msg
+            if self.append_nul:
+                msg += "\000"
+
+            # Convert the level to lowercase for Syslog
+            priority = f"{self.encodePriority(self.facility, self.map_priority(record.levelname))}"
+
+            # Convert the message to bytes are required by RFX 5424
+            priority = priority.encode("utf-8")
+            msg = msg.encode("utf-8")
+            msg = priority + msg
+
+            if not self.socket:
+                self.create_socket()
+
+            if self.unixsocket:
+                try:
+                    self.socket.send(msg)
+                except OSError:
+                    self.socket.close()
+                    self._connect_unixsocket(self.address)
+                    self.socket.send(msg)
+            elif self.socktype == socket.SOCK_DGRAM:
+                self.socket.sendto(msg, self.address)
+            else:
+                self.socket.sendall(msg)
+        except Exception:
+            self.handle_error(record)
+
+    # Aliases for better compatibility to replace standard library logging
+    createSocket = create_socket
