@@ -1,7 +1,7 @@
 """
 Burin Logger
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
@@ -37,7 +37,7 @@ else:
         Return the frame object for the caller's stack frame.
 
         :returns: The current frame from the caller's stack.
-        :rtype:
+        :rtype: Frame
         """
 
         # Intentionally raise an exception to get a frame from the exc_info
@@ -45,6 +45,22 @@ else:
             raise Exception
         except Exception:
             return sys.exc_info()[2].tb_frame.f_back
+
+# Setup method to check if frames are internal to Burin
+_srcDir = _internals["srcDir"]
+def _is_internal_frame(frame):
+    """
+    Determines whether the frame is internal to Burin or import mechanism.
+
+    :param frame: The frame to check if it is internal to the module or import
+                  mechanism.
+    :type frame: Frame
+    :returns: Whether the frame is internal to Burin or the import mechanism.
+    :rtype: bool
+    """
+
+    frameFilepath =  os.path.normcase(frame.f_code.co_filename)
+    return _srcDir in frameFilepath or ("importlib" in frameFilepath and "_bootstrap" in frameFilepath)
 
 # This is the general function for getting a logger instance from Burin
 def get_logger(name=None, msgStyle=None):
@@ -345,55 +361,33 @@ class BurinLogger(Filterer):
         # IronPython isn't run with -X:Frames
         frame = current_frame()
 
-        if frame is not None:
-            frame = frame.f_back
-        originalFrame = frame
+        if frame is None:
+            return ("(unknown file)", 0, "(unknown function)", None)
 
-        # Ignore frames that originate within Burin
-        srcDir = _internals["srcDir"]
-        while hasattr(frame, "f_code"):
-            if frame and srcDir in os.path.normcase(frame.f_code.co_filename):
-                frame = frame.f_back
-            else:
+        # Ignore frames from within Burin and move backwards through the stack
+        while stacklevel > 0:
+            previousFrame = frame.f_back
+
+            if previousFrame is None:
                 break
 
-        # If we have a frame reset the original; otherwise use the original
-        if frame:
-            originalFrame = frame
-        else:
-            frame = originalFrame
+            frame = previousFrame
 
-        # Move backwards through the frame stack to the desired level
-        while frame and stacklevel > 1:
-            frame = frame.f_back
-            stacklevel -= 1
+            if not _is_internal_frame(frame):
+                stacklevel -= 1
 
-        # If we went back to far use the original frame
-        if not frame:
-            frame = originalFrame
-
-        # Setup default caller info
-        callerInfo = ("(unknown file)", 0, "(unknown function)", None)
-
-        # Try to get the actual caller info
-        if hasattr(frame, "f_code"):
-            codeObject = frame.f_code
-
-            # Get the stack info for the frame
-            frameStackInfo = None
-            if stack_info:
-                stackIO = io.StringIO()
+        # Get the stack info for the frame
+        frameStackInfo = None
+        if stack_info:
+            with io.StringIO() as stackIO:
                 stackIO.write("Stack (most recent call last):\n")
                 traceback.print_stack(frame, file=stackIO)
                 frameStackInfo = stackIO.getvalue()
                 if frameStackInfo[-1] == "\n":
                     frameStackInfo = frameStackInfo[:-1]
-                stackIO.close()
 
-            callerInfo = (codeObject.co_filename, frame.f_lineno,
-                          codeObject.co_name, frameStackInfo)
-
-        return callerInfo
+        codeObject = frame.f_code
+        return (codeObject.co_filename, frame.f_lineno, codeObject.co_name, frameStackInfo)
 
     def get_child(self, suffix):
         """
