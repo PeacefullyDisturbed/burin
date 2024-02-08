@@ -89,6 +89,10 @@ def get_level_names_mapping():
         In Python 3.11 :func:`logging.getLevelNamesMapping` was added to the
         standard library; it is supported here for all versions of Python
         compatible with Burin (including versions below 3.11).
+
+    :returns: A dictionary of the current logging level names mapped to the
+              level values.
+    :rtype: dict{str: int}
     """
     return _nameToLevel.copy()
 

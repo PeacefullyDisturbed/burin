@@ -30,7 +30,7 @@ requires-python = ">=3.7"
 [project.optional-dependencies]
 # Dev and Doc dependecies only support latest supported Python version
 dev = [
-    "ruff ~=0.2.0"
+    "ruff ~=0.2.1"
 ]
 doc = [
     "Sphinx ~=7.2.6",
