@@ -308,7 +308,7 @@ class TestBurinDollarStyle:
 
 
 @pytest.fixture
-def test_log_record():
+def sample_log_record():
     """
     Create a generic log record for formatter testing.
     """
@@ -360,102 +360,102 @@ class TestBurinFormatter:
         for styleKey, styleClass in formatterStyles.items():
             assert isinstance(burin.BurinFormatter(style=styleKey)._style, styleClass)
 
-    def test_formatter_no_validation(self, test_log_record):
+    def test_formatter_no_validation(self, sample_log_record):
         """
         Tests the a formatter will instantiate and work with no validation.
         """
 
         # Clear test stack and exception information as it isn't desired here
-        test_log_record.exc_info = None
-        test_log_record.stack_info = None
+        sample_log_record.exc_info = None
+        sample_log_record.stack_info = None
 
         recordFormat = "{message}"
 
         testFormatter = burin.BurinFormatter(recordFormat, style="{", validate=False)
 
-        assert testFormatter.format(test_log_record) == test_log_record.msg
+        assert testFormatter.format(sample_log_record) == sample_log_record.msg
 
-    def test_formatter_format_time_default(self, test_log_record):
+    def test_formatter_format_time_default(self, sample_log_record):
         """
         Tests formatting time from a log record using the default time format.
         """
 
         # Get the log record time into a string based on the default format
-        recordCreationTime = time.localtime(test_log_record.created)
+        recordCreationTime = time.localtime(sample_log_record.created)
         recordTimeText = time.strftime(burin.BurinFormatter.default_time_format, recordCreationTime)
-        recordTimeText += f",{test_log_record.msecs:0=3.0f}"
+        recordTimeText += f",{sample_log_record.msecs:0=3.0f}"
 
         testFormatter = burin.BurinFormatter()
 
-        assert testFormatter.formatTime(test_log_record) == recordTimeText
+        assert testFormatter.formatTime(sample_log_record) == recordTimeText
 
-    def test_formatter_format_time(self, test_log_record):
+    def test_formatter_format_time(self, sample_log_record):
         """
         Tests formatting time from a log record using a custom format.
         """
 
         dateTimeFormat = "%A %B %d, %I:%M:%S %p"
-        recordTimeText = time.strftime(dateTimeFormat, time.localtime(test_log_record.created))
+        recordTimeText = time.strftime(dateTimeFormat, time.localtime(sample_log_record.created))
 
         testFormatter = burin.BurinFormatter()
 
-        assert testFormatter.formatTime(test_log_record, dateTimeFormat) == recordTimeText
+        assert testFormatter.formatTime(sample_log_record, dateTimeFormat) == recordTimeText
 
-    def test_formatter_all_fields(self, test_log_record):
+    def test_formatter_all_fields(self, sample_log_record):
         """
         Tests formatting a record with all fields in the format string.
         """
 
         # Clear test stack and exception information as it isn't desired here
-        test_log_record.exc_info = None
-        test_log_record.stack_info = None
+        sample_log_record.exc_info = None
+        sample_log_record.stack_info = None
 
         dateTimeFormat = "%A %B %d, %I:%M:%S %p"
         recordFormat = ("{asctime} - {created} - {filename} - {funcName} - {levelname} - {levelno} - {lineno} - "
                         "{message} - {module} - {msecs} - {name} - {pathname} - {process} - {processName} - "
-                        "{relativeCreated} - {thread} - {threadName}")
+                        "{relativeCreated} - {taskName} - {thread} - {threadName}")
 
         # Get a comparison for the record text
-        recordTimeText = time.strftime(dateTimeFormat, time.localtime(test_log_record.created))
-        recordText = recordFormat.format(asctime=recordTimeText, message=test_log_record.msg,
-                                         **test_log_record.__dict__)
+        recordTimeText = time.strftime(dateTimeFormat, time.localtime(sample_log_record.created))
+        recordText = recordFormat.format(asctime=recordTimeText, message=sample_log_record.msg,
+                                         **sample_log_record.__dict__)
 
         testFormatter = burin.BurinFormatter(recordFormat, dateTimeFormat, "{")
 
-        assert testFormatter.format(test_log_record) == recordText
+        assert testFormatter.format(sample_log_record) == recordText
 
-    def test_formatter_defaults(self, test_log_record):
+    def test_formatter_defaults(self, sample_log_record):
         """
         Tests formatting defaults are inserted into the message properly.
         """
 
         # Clear test stack and exception information as it isn't desired here
-        test_log_record.exc_info = None
-        test_log_record.stack_info = None
+        sample_log_record.exc_info = None
+        sample_log_record.stack_info = None
 
         formatDefaults = {"test": "Pass"}
 
-        recordText = f"{test_log_record.msg} :: {formatDefaults['test']}"
+        recordText = f"{sample_log_record.msg} :: {formatDefaults['test']}"
 
         recordFormat = "{message} :: {test}"
         testFormatter = burin.BurinFormatter(recordFormat, style="{", defaults=formatDefaults)
 
-        assert testFormatter.format(test_log_record) == recordText
+        assert testFormatter.format(sample_log_record) == recordText
 
-    def test_formatter_exception_stack_info(self, test_log_record):
+    def test_formatter_exception_stack_info(self, sample_log_record):
         """
         Tests formatting a record with exception and stack information.
         """
 
         # Get the comparison text for the formatted record
-        recordText = f"{test_log_record.msg}"
-        recordText += f"\n{burin.BurinFormatter.format_exception(None, test_log_record.exc_info)}"
-        recordText += f"\n{test_log_record.stack_info}"
+        recordText = f"{sample_log_record.msg}"
+        recordText += f"\n{burin.BurinFormatter.format_exception(None, sample_log_record.exc_info)}"
+        recordText += f"\n{sample_log_record.stack_info}"
 
         recordFormat = "{message}"
         testFormatter = burin.BurinFormatter(recordFormat, style="{")
 
-        assert testFormatter.format(test_log_record) == recordText
+        assert testFormatter.format(sample_log_record) == recordText
 
 
 class TestBurinBufferingFormatter:
