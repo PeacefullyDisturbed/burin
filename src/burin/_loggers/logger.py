@@ -43,8 +43,8 @@ else:
         # Intentionally raise an exception to get a frame from the exc_info
         try:
             raise Exception
-        except Exception:
-            return sys.exc_info()[2].tb_frame.f_back
+        except Exception as exc:
+            return exc.__traceback__.tb_frame.f_back
 
 # Setup method to check if frames are internal to Burin
 _srcDir = _internals["srcDir"]
