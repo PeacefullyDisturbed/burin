@@ -1,6 +1,9 @@
 name: Push Checks
 run-name: Check - ${{ github.event.head_commit.message }}
-on: push
+on:
+    push:
+        branches:
+            - main
 jobs:
     call_test_and_build:
         name: Call test and build
