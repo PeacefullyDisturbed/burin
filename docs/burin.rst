@@ -75,6 +75,23 @@ not.
     This differs slightly from :mod:`logging` where the attributes are directly
     on the module.
 
+.. attribute:: burin.config.logAsyncioTasks
+    :value: True
+
+    Whether :class:`asyncio.Task` names should be available for inclusion in
+    logs.  Whatever value is set for this will be automatically converted using
+    :func:`bool`.
+
+    .. note::
+
+        In Python 3.12 this was added to the standard :mod:`logging` module; it
+        is supported here for all versions of Python compatible with Burin
+        (including versions below 3.12).
+
+        However; names were added to :class:`asyncio.Task` objects in Python
+        3.8, so in Python 3.7 the *taskName* attribute on a log record will
+        always be **None**.
+
 .. attribute:: burin.config.logMultiprocessing
     :value: True
 

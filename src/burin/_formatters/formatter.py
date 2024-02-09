@@ -110,6 +110,17 @@ class BurinFormatter(Formatter):
         Time in milliseconds from when the log record was created since the
         Burin package was loaded.
 
+    taskName
+        Asyncio task name.
+
+        .. note::
+            In Python 3.12 this was added to the standard library; it is
+            supported here for all versions of Python compatible with Burin
+            (including versions below 3.12).
+
+            However; this will always be **None** in Python 3.7 as Task names
+            were added in Python 3.8.
+
     thread
         Thread Id
 

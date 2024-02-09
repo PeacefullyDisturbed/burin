@@ -6,6 +6,7 @@ See included LICENSE file for details.
 """
 
 # Python imports
+import asyncio
 import multiprocessing
 import os
 from string import Template
@@ -24,6 +25,15 @@ testLevel = burin.INFO
 testLineNumber = 10
 testName = "TestRecord"
 testPathname = "/test/path"
+
+
+async def sample_log_record_async():
+    """
+    Async function to create a generic sample log record.
+    """
+
+    return burin.BurinLogRecord(testName, testLevel, testPathname,
+                                testLineNumber, "", (), None)
 
 
 class TestLogRecord:
@@ -46,6 +56,61 @@ class TestLogRecord:
         logRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
                                          testLineNumber, testMessage, (), None)
         assert logRecord.get_message() == testMessage
+
+    def test_log_asyncio_tasks_enabled(self):
+        """
+        Tests that enabling logAsyncioTasks adds relevant data to record.
+        """
+
+        loop = asyncio.new_event_loop()
+        try:
+            burin.config.logAsyncioTasks = True
+            asyncio.set_event_loop(loop)
+            asyncRecord = loop.run_until_complete(sample_log_record_async())
+        finally:
+            loop.close()
+
+        # Tasks names were added in Python 3.8, so the log record getting the
+        # task name should quietly fail and remain None
+        if hasattr(asyncio.Task, "get_name"):
+            assert asyncRecord.taskName is not None
+        else:
+            assert asyncRecord.taskName is None
+
+    def test_log_asyncio_tasks_disabled(self):
+        """
+        Tests that disabling logAsyncioTasks adds no data to the record.
+        """
+
+        loop = asyncio.new_event_loop()
+        try:
+            burin.config.logAsyncioTasks = False
+            asyncio.set_event_loop(loop)
+            asyncRecord = loop.run_until_complete(sample_log_record_async())
+        finally:
+            loop.close()
+
+        assert asyncRecord.taskName is None
+
+    def test_log_asyncio_tasks_enabled_no_async(self):
+        """
+        Tests that enabling logAsyncioTasks adds no data if not in async task.
+        """
+
+        burin.config.logAsyncioTasks = True
+        noneRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
+                                          testLineNumber, "", (), None)
+        assert noneRecord.taskName is None
+
+    def test_log_asyncio_tasks_disabled_no_async(self):
+        """
+        Tests that disabling logAsyncioTasks adds no data if not in async task.
+        """
+
+        burin.config.logAsyncioTasks = False
+        noneRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
+                                          testLineNumber, "", (), None)
+        assert noneRecord.taskName is None
 
     def test_log_multiprocessing_enabled(self):
         """
@@ -364,9 +429,7 @@ def custom_record():
         """
         Test record with fixed message output.
         """
-
-        def get_message(self):
-            return "Custom record"
+        pass
 
     return CustomRecord
 

@@ -24,10 +24,36 @@ class _BurinConfig:
         Sets the initial configuration values.
         """
 
+        self.__logAsyncioTasks = True
         self.__logMultiprocessing = True
         self.__logProcesses = True
         self.__logThreads = True
         self.__raiseExceptions = True
+
+    @property
+    def logAsyncioTasks(self):
+        """
+        Whether asyncio task names should be available for inclusion in logs.
+
+        Whatever value is set for this will be automatically converted using
+        :func:`bool`.
+
+        .. note::
+
+            In Python 3.12 this was added to the standard :mod:`logging`
+            module; it is supported here for all versions of Python compatible
+            with Burin (including versions below 3.12).
+
+            However; names were added to :class:`asyncio.Task` objects in
+            Python 3.8, so in Python 3.7 the *taskName* attribute on a log
+            record will always be **None**.
+        """
+
+        return self.__logAsyncioTasks
+
+    @logAsyncioTasks.setter
+    def logAsyncioTasks(self, value):
+        self.__logAsyncioTasks = bool(value)
 
     @property
     def logMultiprocessing(self):

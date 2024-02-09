@@ -36,6 +36,17 @@ class BurinLogRecord:
         The :class:`BurinPercentLogRecord` instead provides the same printf (%
         style) formatting of the Python builtin LogRecord.
 
+    .. note::
+
+        In Python 3.12 the *taskName* attribute was added to the standard
+        :class:`logging.LogRecord` class; it is supported here for all
+        versions of Python compatible with Burin (including versions below
+        3.12).
+
+        However; names were added to :class:`asyncio.Task` objects in Python
+        3.8, so in Python 3.7 the *taskName* attribute on a log record will
+        always be **None**.
+
     Custom log record factories that are created should inherit from this and
     typically only override the :meth:`BurinLogRecord.get_message` method.
     """
@@ -45,7 +56,7 @@ class BurinLogRecord:
     #: :func:`set_log_record_factory`.
     factoryKey = None
 
-    def __init__(self, name, level, pathname, lineno, msg, args, exc_info,
+    def __init__(self, name, level, pathname, lineno, msg, args, exc_info,  # noqa: C901 PLR0912 PLR0915
                  func=None, sinfo=None, **kwargs):
         """
         This initializes the log record and stores all relevant values.
@@ -135,6 +146,15 @@ class BurinLogRecord:
             self.process = os.getpid()
         else:
             self.process = None
+
+        self.taskName = None
+        if config.logAsyncioTasks:
+            asyncio = sys.modules.get("asyncio")
+            if asyncio:
+                try:
+                    self.taskName = asyncio.current_task().get_name()
+                except Exception:
+                    pass
 
     def get_message(self):
         """
