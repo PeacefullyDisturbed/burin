@@ -1,7 +1,7 @@
 """
 Burin Rotating File Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -29,7 +29,7 @@ class BurinRotatingFileHandler(BurinBaseRotatingHandler, RotatingFileHandler):
     """
 
     def __init__(self, filename, mode="a", maxBytes=0, backupCount=0,
-                 encoding=None, delay=False, errors=None):
+                 encoding=None, delay=False, errors=None, level="NOTSET"):
         """
         This will initialize the handler to write to the file.
 
@@ -71,6 +71,8 @@ class BurinRotatingFileHandler(BurinBaseRotatingHandler, RotatingFileHandler):
         :param errors: Specifies how encoding errors are handled.  See
                        :func:`open` for information on the appropriate values.
         :type errors: str
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
         # If rotation is desired then it doesn't make sense to use a "w" mode
@@ -82,7 +84,7 @@ class BurinRotatingFileHandler(BurinBaseRotatingHandler, RotatingFileHandler):
             encoding = io.text_encoding(encoding)
 
         BurinBaseRotatingHandler.__init__(self, filename, mode, encoding=encoding,
-                                          delay=delay, errors=errors)
+                                          delay=delay, errors=errors, level=level)
         self.maxBytes = maxBytes
         self.backupCount = backupCount
 

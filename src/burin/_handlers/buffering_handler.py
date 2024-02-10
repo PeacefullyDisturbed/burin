@@ -1,7 +1,7 @@
 """
 Burin Buffering Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -29,16 +29,18 @@ class BurinBufferingHandler(BurinHandler, BufferingHandler):
     subclass *__init__* method.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity, level="NOTSET"):
         """
         The buffer will flush once *capacity* number of records are stored.
 
         :param capacity: The number of log records to hold in the buffer before
                          flushing.
         :type capacity: int
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
-        BurinHandler.__init__(self)
+        BurinHandler.__init__(self, level=level)
         self.capacity = capacity
         self.buffer = []
 

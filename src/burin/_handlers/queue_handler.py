@@ -1,7 +1,7 @@
 """
 Burin Queue Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -31,13 +31,15 @@ class BurinQueueHandler(BurinHandler, QueueHandler):
     then processed and output by the :class:`BurinQueueListener`.
     """
 
-    def __init__(self, queue):
+    def __init__(self, queue, level="NOTSET"):
         """
         This will initialize the handler and set the queue to use.
 
         :param queue: This must be any queue like object; it does not need to
                       support the task tracking API.
         :type queue: queue.Queue | queue.SimpleQueue | multiprocessing.Queue
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
         BurinHandler.__init__(self)

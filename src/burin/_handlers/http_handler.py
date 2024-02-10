@@ -1,13 +1,13 @@
 """
 Burin HTTP Handler
 
-Copyright (c) 2024 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -39,7 +39,7 @@ class BurinHTTPHandler(BurinHandler, HTTPHandler):
     """
 
     def __init__(self, host, url, method="GET", secure=False, credentials=None,
-                 context=None):
+                 context=None, level="NOTSET"):
         """
         This will setup the handler and do some basic checks of parameters.
 
@@ -69,11 +69,13 @@ class BurinHTTPHandler(BurinHandler, HTTPHandler):
                         settings for an HTTPS connection.  This must be
                         **None** if *secure*=**False**.
         :type context: ssl.SSLContext
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         :raises ValueError: If *method* is not 'GET' or 'POST', or *context* is
                             not **None** and *secure*=**False**.
         """
 
-        BurinHandler.__init__(self)
+        BurinHandler.__init__(self, level=level)
 
         method = method.upper()
         if method not in allowedMethods:

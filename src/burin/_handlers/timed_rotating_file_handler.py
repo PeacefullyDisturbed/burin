@@ -1,13 +1,13 @@
 """
 Burin Timed Rotating File Handler
 
-Copyright (c) 2024 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -41,7 +41,7 @@ class BurinTimedRotatingFileHandler(BurinBaseRotatingHandler, TimedRotatingFileH
 
     def __init__(self, filename, when="h", interval=1, backupCount=0,
                  encoding=None, delay=False, utc=False, atTime=None,
-                 errors=None):
+                 errors=None, level="NOTSET"):
         """
         This will initialize the handler to write to the file.
 
@@ -108,12 +108,14 @@ class BurinTimedRotatingFileHandler(BurinBaseRotatingHandler, TimedRotatingFileH
         :param errors: Specifies how encoding errors are handled.  See
                        :func:`open` for information on the appropriate values.
         :type errors: str
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
         encoding = io.text_encoding(encoding)
         weekdayLength = 2
         BurinBaseRotatingHandler.__init__(self, filename, "a", encoding=encoding,
-                                          delay=delay, errors=errors)
+                                          delay=delay, errors=errors, level=level)
         self.when = when.upper()
         self.backupCount = backupCount
         self.utc = utc

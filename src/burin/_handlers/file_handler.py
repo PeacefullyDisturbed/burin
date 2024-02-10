@@ -1,13 +1,13 @@
 """
 Burin File Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -35,7 +35,7 @@ class BurinFileHandler(BurinStreamHandler, FileHandler):
     """
 
     def __init__(self, filename, mode="a", encoding=None, delay=False,
-                 errors=None):
+                 errors=None, level="NOTSET"):
         """
         This will setup the handler using the absolute file path.
 
@@ -56,6 +56,8 @@ class BurinFileHandler(BurinStreamHandler, FileHandler):
         :param errors: Specifies how encoding errors are handled.  See
                        :func:`open` for information on the appropriate values.
         :type errors: str
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
         # Support Path objects being passed in
@@ -81,10 +83,10 @@ class BurinFileHandler(BurinStreamHandler, FileHandler):
         if delay:
             # Don't open the stream but call the constructor to set level,
             # formatter, create lock, etc.
-            BurinHandler.__init__(self)
+            BurinHandler.__init__(self, level=level)
             self.stream = None
         else:
-            BurinStreamHandler.__init__(self, self._open())
+            BurinStreamHandler.__init__(self, self._open(), level=level)
 
     def close(self):
         """

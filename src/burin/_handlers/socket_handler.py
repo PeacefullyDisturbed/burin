@@ -1,13 +1,13 @@
 """
 Burin Socket Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -42,7 +42,7 @@ class BurinSocketHandler(BurinHandler, SocketHandler):
     recreate the log record from the pickled data if desired.
     """
 
-    def __init__(self, host, port, pickleProtocol=4):
+    def __init__(self, host, port, pickleProtocol=4, level="NOTSET"):
         """
         This will set the *host* and *port* for the socket to connect to.
 
@@ -53,9 +53,11 @@ class BurinSocketHandler(BurinHandler, SocketHandler):
         :param pickleProtocol: The pickle protocol version to use.  (Default =
                                4)
         :type pickleProtocol: int
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
-        BurinHandler.__init__(self)
+        BurinHandler.__init__(self, level=level)
         self.host = host
         self.port = port
         self.pickleProtocol = pickleProtocol

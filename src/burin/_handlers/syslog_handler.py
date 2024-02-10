@@ -1,13 +1,13 @@
 """
 Burin Syslog Handler
 
-Copyright (c) 2024 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -34,7 +34,7 @@ class BurinSyslogHandler(BurinHandler, SysLogHandler):
     """
 
     def __init__(self, address=("localhost", SYSLOG_UDP_PORT),
-                 facility=SysLogHandler.LOG_USER, socktype=None):
+                 facility=SysLogHandler.LOG_USER, socktype=None, level="NOTSET"):
         """
         This initializes the handler and sets it for sending to syslog.
 
@@ -58,9 +58,11 @@ class BurinSyslogHandler(BurinHandler, SysLogHandler):
                          used if this is **None**; for TCP connections specify
                          :const:`socket.SOCK_STREAM`.
         :type socktype: int
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
-        BurinHandler.__init__(self)
+        BurinHandler.__init__(self, level=level)
 
         self.address = address
         self.facility = facility

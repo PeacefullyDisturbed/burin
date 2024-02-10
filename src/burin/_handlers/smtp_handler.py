@@ -1,13 +1,13 @@
 """
 Burin SMTP Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -33,7 +33,7 @@ class BurinSMTPHandler(BurinHandler, SMTPHandler):
     """
 
     def __init__(self, mailhost, fromaddr, toaddrs, subject, credentials=None,
-                 secure=None, timeout=5.0):
+                 secure=None, timeout=5.0, level="NOTSET"):
         """
         This will initialize the handler for sending emails.
 
@@ -77,9 +77,11 @@ class BurinSMTPHandler(BurinHandler, SMTPHandler):
         :param timeout: A timeout (in seconds) for communications with the SMTP
                         server.
         :type timeout: float | int
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
-        BurinHandler.__init__(self)
+        BurinHandler.__init__(self, level=level)
 
         if isinstance(mailhost, (list, tuple)):
             self.mailhost, self.mailport = mailhost

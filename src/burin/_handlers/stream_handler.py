@@ -1,13 +1,13 @@
 """
 Burin Stream Handler
 
-Copyright (c) 2024 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -37,7 +37,7 @@ class BurinStreamHandler(BurinHandler, StreamHandler):
 
     terminator = "\n"
 
-    def __init__(self, stream=None):
+    def __init__(self, stream=None, level="NOTSET"):
         """
         This initializes the handler and sets the *stream* to use.
 
@@ -46,9 +46,11 @@ class BurinStreamHandler(BurinHandler, StreamHandler):
         :param stream: The stream to log to.  If this is **None** then
                        :obj:`sys.stderr` is used.
         :type stream: io.TextIOBase
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
-        BurinHandler.__init__(self)
+        BurinHandler.__init__(self, level=level)
         if stream is None:
             stream = sys.stderr
         self.stream = stream

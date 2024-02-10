@@ -1,7 +1,7 @@
 """
 Burin Watched File Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -34,7 +34,7 @@ class BurinWatchedFileHandler(BurinFileHandler, WatchedFileHandler):
     """
 
     def __init__(self, filename, mode="a", encoding=None, delay=False,
-                 errors=None):
+                 errors=None, level="NOTSET"):
         """
         This will setup the handler and stat the file.
 
@@ -50,13 +50,15 @@ class BurinWatchedFileHandler(BurinFileHandler, WatchedFileHandler):
         :param errors: Specifies how encoding errors are handled.  See
                        :func:`open` for information on the appropriate values.
         :type errors: str
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
         if "b" not in mode:
             encoding = io.text_encoding(encoding)
 
         BurinFileHandler.__init__(self, filename, mode=mode, encoding=encoding,
-                                  delay=delay, errors=errors)
+                                  delay=delay, errors=errors, level=level)
 
         self.dev = -1
         self.ino = -1

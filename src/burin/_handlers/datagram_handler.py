@@ -1,7 +1,7 @@
 """
 Burin Datagram Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -38,7 +38,7 @@ class BurinDatagramHandler(BurinSocketHandler):
     recreate the log record from the pickled data if desired.
     """
 
-    def __init__(self, host, port, pickleProtocol=4):
+    def __init__(self, host, port, pickleProtocol=4, level="NOTSET"):
         """
         The *host* and *port* will set address and family of socket used.
 
@@ -53,9 +53,12 @@ class BurinDatagramHandler(BurinSocketHandler):
         :param pickleProtocol: The pickle protocol version to use.  (Default =
                                4)
         :type pickleProtocol: int
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
-        BurinSocketHandler.__init__(self, host, port, pickleProtocol)
+        BurinSocketHandler.__init__(self, host, port, pickleProtocol,
+                                    level=level)
         self.closeOnError = False
 
     def make_socket(self):

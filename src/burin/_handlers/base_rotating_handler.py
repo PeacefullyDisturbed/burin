@@ -1,7 +1,7 @@
 """
 Burin Base Rotating Handler
 
-Copyright (c) 2024 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -30,7 +30,8 @@ class BurinBaseRotatingHandler(BurinFileHandler, BaseRotatingHandler):
     namer = None
     rotator = None
 
-    def __init__(self, filename, mode, encoding=None, delay=False, errors=None):
+    def __init__(self, filename, mode, encoding=None, delay=False, errors=None,
+                 level="NOTSET"):
         """
         This will initialize the handler for outputting to a file.
 
@@ -46,10 +47,12 @@ class BurinBaseRotatingHandler(BurinFileHandler, BaseRotatingHandler):
         :param errors: Specifies how encoding errors are handled.  See
                        :func:`open` for information on the appropriate values.
         :type errors: str
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
         BurinFileHandler.__init__(self, filename, mode=mode, encoding=encoding,
-                                  delay=delay, errors=errors)
+                                  delay=delay, errors=errors, level=level)
         self.mode = mode
         self.encoding = encoding
         self.errors = errors

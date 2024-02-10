@@ -1,7 +1,7 @@
 """
 Burin Memory Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -29,7 +29,7 @@ class BurinMemoryHandler(BurinBufferingHandler, MemoryHandler):
     """
 
     def __init__(self, capacity, flushLevel="ERROR", target=None,
-                 flushOnClose=True):
+                 flushOnClose=True, level="NOTSET"):
         """
         The *target* handler will be called when this flushes its buffer.
 
@@ -46,9 +46,11 @@ class BurinMemoryHandler(BurinBufferingHandler, MemoryHandler):
         :param flushOnClose: Whether the buffer should be flushed when the
                              handler is closed.  (Default = **True**)
         :type flushOnClose: bool
+        :param level: The logging level of the handler.  (Default = 'NOTSET')
+        :type level: int | str
         """
 
-        BurinBufferingHandler.__init__(self, capacity)
+        BurinBufferingHandler.__init__(self, capacity, level=level)
         self.flushLevel = _check_level(flushLevel)
         self.target = target
         self.flushOnClose = flushOnClose
