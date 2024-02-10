@@ -78,7 +78,7 @@ class BurinFilterer:
                   returned an different instance of a record then that is what
                   will be returned here.  It should be used for all further
                   processing and handling of the log record event.
-        :rtype: BurinLogRecord | False
+        :rtype: BurinLogRecord | bool
         """
 
         for eachFilter in self.filters:

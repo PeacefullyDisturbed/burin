@@ -1,7 +1,7 @@
 """
 Burin Loggers and Manager
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -39,7 +39,6 @@ def set_logger_class(newClass):
     """
 
     BurinLogger.manager.loggerClass = newClass
-
 
 # Aliases for better compatibility to replace standard library logging
 getLoggerClass = get_logger_class

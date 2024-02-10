@@ -1,7 +1,7 @@
 """
 Burin Logging Package
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -26,7 +26,8 @@ from ._handlers import (BurinBaseRotatingHandler, BurinBufferingHandler,
                         BurinRotatingFileHandler, BurinSMTPHandler,
                         BurinSocketHandler, BurinStreamHandler,
                         BurinSyslogHandler, BurinTimedRotatingFileHandler,
-                        BurinWatchedFileHandler)
+                        BurinWatchedFileHandler, get_handler_by_name,
+                        getHandlerByName, get_handler_names, getHandlerNames)
 from ._log_levels import (CRITICAL, DEBUG, ERROR, INFO, NOTSET, WARNING,
                           get_level_name, getLevelName,
                           get_level_names_mapping, getLevelNamesMapping)
@@ -53,12 +54,14 @@ __all__ = ["critical", "debug", "disable", "error", "exception", "info", "log",
            "BurinRotatingFileHandler", "BurinSMTPHandler",
            "BurinSocketHandler", "BurinStreamHandler", "BurinSyslogHandler",
            "BurinTimedRotatingFileHandler", "BurinWatchedFileHandler",
-           "CRITICAL", "DEBUG", "ERROR", "INFO", "NOTSET", "WARNING",
-           "get_level_name", "getLevelName", "get_level_names_mapping",
-           "getLevelNamesMapping", "BurinBraceLogRecord",
-           "BurinDollarLogRecord", "BurinLogRecord", "BurinPercentLogRecord",
-           "get_log_record_factory", "getLogRecordFactory", "make_log_record",
-           "makeLogRecord", "set_log_record_factory", "setLogRecordFactory",
-           "BurinLogger", "BurinLoggerAdapter", "get_logger", "getLogger",
-           "get_logger_class", "getLoggerClass", "set_logger_class",
-           "setLoggerClass", "config", "capture_warnings", "captureWarnings"]
+           "get_handler_by_name", "getHandlerByName", "get_handler_names",
+           "getHandlerNames", "CRITICAL", "DEBUG", "ERROR", "INFO", "NOTSET",
+           "WARNING", "get_level_name", "getLevelName",
+           "get_level_names_mapping", "getLevelNamesMapping",
+           "BurinBraceLogRecord", "BurinDollarLogRecord", "BurinLogRecord",
+           "BurinPercentLogRecord", "get_log_record_factory",
+           "getLogRecordFactory", "make_log_record", "makeLogRecord",
+           "set_log_record_factory", "setLogRecordFactory", "BurinLogger",
+           "BurinLoggerAdapter", "get_logger", "getLogger", "get_logger_class",
+           "getLoggerClass", "set_logger_class", "setLoggerClass", "config",
+           "capture_warnings", "captureWarnings"]
