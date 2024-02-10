@@ -16,6 +16,7 @@ from ._burin import (critical, debug, disable, error, exception, info, log,
                      shutdown, warning)
 from ._config import basic_config, basicConfig
 from ._exceptions import ConfigError, FactoryError, FormatError
+from ._filters import BurinFilter, BurinFilterer
 from ._formatters import BurinBufferingFormatter, BurinFormatter
 from ._handlers import (BurinBaseRotatingHandler, BurinBufferingHandler,
                         BurinDatagramHandler, BurinFileHandler, BurinHandler,
@@ -43,21 +44,21 @@ from ._warnings import capture_warnings, captureWarnings
 
 __all__ = ["critical", "debug", "disable", "error", "exception", "info", "log",
            "shutdown", "warning", "basic_config", "basicConfig", "ConfigError",
-           "FactoryError", "FormatError", "BurinBufferingFormatter",
-           "BurinFormatter", "BurinBaseRotatingHandler",
-           "BurinBufferingHandler", "BurinDatagramHandler", "BurinFileHandler",
-           "BurinHandler", "BurinHTTPHandler", "BurinMemoryHandler",
-           "BurinNTEventLogHandler", "BurinNullHandler", "BurinQueueHandler",
-           "BurinQueueListener", "BurinRotatingFileHandler",
-           "BurinSMTPHandler", "BurinSocketHandler", "BurinStreamHandler",
-           "BurinSyslogHandler", "BurinTimedRotatingFileHandler",
-           "BurinWatchedFileHandler", "CRITICAL", "DEBUG", "ERROR", "INFO",
-           "NOTSET", "WARNING", "get_level_name", "getLevelName",
-           "get_level_names_mapping", "getLevelNamesMapping",
-           "BurinBraceLogRecord", "BurinDollarLogRecord", "BurinLogRecord",
-           "BurinPercentLogRecord", "get_log_record_factory",
-           "getLogRecordFactory", "make_log_record", "makeLogRecord",
-           "set_log_record_factory", "setLogRecordFactory", "BurinLogger",
-           "BurinLoggerAdapter", "get_logger", "getLogger", "get_logger_class",
-           "getLoggerClass", "set_logger_class", "setLoggerClass", "config",
-           "capture_warnings", "captureWarnings"]
+           "FactoryError", "FormatError", "BurinFilter", "BurinFilterer",
+           "BurinBufferingFormatter", "BurinFormatter",
+           "BurinBaseRotatingHandler", "BurinBufferingHandler",
+           "BurinDatagramHandler", "BurinFileHandler", "BurinHandler",
+           "BurinHTTPHandler", "BurinMemoryHandler", "BurinNTEventLogHandler",
+           "BurinNullHandler", "BurinQueueHandler", "BurinQueueListener",
+           "BurinRotatingFileHandler", "BurinSMTPHandler",
+           "BurinSocketHandler", "BurinStreamHandler", "BurinSyslogHandler",
+           "BurinTimedRotatingFileHandler", "BurinWatchedFileHandler",
+           "CRITICAL", "DEBUG", "ERROR", "INFO", "NOTSET", "WARNING",
+           "get_level_name", "getLevelName", "get_level_names_mapping",
+           "getLevelNamesMapping", "BurinBraceLogRecord",
+           "BurinDollarLogRecord", "BurinLogRecord", "BurinPercentLogRecord",
+           "get_log_record_factory", "getLogRecordFactory", "make_log_record",
+           "makeLogRecord", "set_log_record_factory", "setLogRecordFactory",
+           "BurinLogger", "BurinLoggerAdapter", "get_logger", "getLogger",
+           "get_logger_class", "getLoggerClass", "set_logger_class",
+           "setLoggerClass", "config", "capture_warnings", "captureWarnings"]

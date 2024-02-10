@@ -92,6 +92,7 @@ issues.
     handlers
     formatters
     log_records
+    filters
     exceptions
 
 .. toctree::

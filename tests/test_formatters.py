@@ -31,7 +31,7 @@ def basic_record():
     """
 
     testRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
-                                      testLineNumber, testMessage, None, None)
+                                      testLineNumber, testMessage, (), None)
     testRecord.message = testRecord.get_message()
     return testRecord
 

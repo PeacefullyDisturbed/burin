@@ -6,13 +6,12 @@ See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
 # Python Imports
-from logging import Filterer
 import io
 import os.path
 import sys
@@ -20,9 +19,10 @@ import traceback
 
 # Burin Imports
 from .._exceptions import FactoryError
+from .._filters import BurinFilterer
 from .._handlers import lastResort
 from .._log_levels import CRITICAL, DEBUG, ERROR, INFO, NOTSET, WARNING, get_level_name, _check_level
-from .._log_records import logRecordFactories
+from .._log_records import BurinLogRecord, logRecordFactories
 from .._state import config, _internals
 from .._threading import _BurinLock
 
@@ -126,7 +126,7 @@ def get_logger(name=None, msgStyle=None):
 getLogger = get_logger
 
 
-class BurinLogger(Filterer):
+class BurinLogger(BurinFilterer):
     """
     Loggers represent a logging channel within an application.
 
@@ -190,7 +190,7 @@ class BurinLogger(Filterer):
                               factory.
         """
 
-        Filterer.__init__(self)
+        BurinFilterer.__init__(self)
         self.name = name
         self.level = _check_level(level)
         self.__msgStyle = None
@@ -226,10 +226,6 @@ class BurinLogger(Filterer):
                                f"logRecordFactory: {', '.join(logRecordFactories.keys())}")
 
         self.__msgStyle = style
-
-    # Alias methods from the standard library filterer
-    add_filter = Filterer.addFilter
-    remove_filter = Filterer.removeFilter
 
     def add_handler(self, handler):
         """
@@ -449,8 +445,18 @@ class BurinLogger(Filterer):
         :type record: BurinLogRecord
         """
 
-        if not self.disabled and self.filter(record):
-            self.call_handlers(record)
+        if self.disabled:
+            return
+
+        filterResult = self.filter(record)
+
+        if not filterResult:
+            return
+
+        if isinstance(filterResult, BurinLogRecord):
+            record = filterResult
+
+        self.call_handlers(record)
 
     def has_handlers(self):
         """
