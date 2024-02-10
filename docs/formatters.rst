@@ -22,7 +22,6 @@ BurinFormatter
 The :class:`BurinFormatter` is derived from :class:`logging.Formatter` and
 should function identically in almost all use cases.
 
-
 .. note::
 
     All methods of the :class:`BurinFormatter` with an *underscore_separated*

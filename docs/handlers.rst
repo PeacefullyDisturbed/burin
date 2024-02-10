@@ -103,7 +103,8 @@ from.  This should not be used directly but instead can be inherited from to
 create custom handlers.
 
 .. autoclass:: BurinHandler
-    :members: close, create_lock, format, handle_error, set_level
+    :members: acquire, close, create_lock, flush, format, handle, handle_error,
+              release, set_formatter, set_level
 
     .. autoproperty:: name
 

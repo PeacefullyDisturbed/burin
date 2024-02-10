@@ -1,42 +1,45 @@
 """
 Burin Base Handler
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
 # Python Imports
-from logging import Handler, Filterer
 from threading import RLock
 import os.path
 import sys
 import traceback
 
 # Burin Imports
+from .._filters import BurinFilterer
 from .._formatters import _defaultFormatter
 from .._log_levels import get_level_name, _check_level
+from .._log_records import BurinLogRecord
 from .._state import config, _internals
 from .._threading import _BurinLock, _register_at_fork_reinit_lock
 from ._references import _add_handler_ref, _handlers
 
 
-class BurinHandler(Handler):
+class BurinHandler(BurinFilterer):
     """
     Handlers emit logging events to specific destinations.
 
     .. note::
 
-        This is a subclass of :class:`logging.Handler` but has some minor
-        changes that allow it to work within Burin.
+        This functions almost identically to :class:`logging.Handler` but has
+        some minor changes that allow it to work within Burin.  These changes
+        shouldn't impact normal usage when compared with the standard
+        :mod:`logging` library.
 
-        These changes shouldn't impact normal usage when compared with the
-        standard :mod:`logging` library.
+        This is not a subclass of :class:`logging.Handler` and is not usable
+        with the standard library :mod:`logging` module.
 
     This is the base handler class for Burin and should not be used directly,
     but instead can be subclassed to create other handlers that work with
@@ -54,7 +57,7 @@ class BurinHandler(Handler):
         :type level: int | str
         """
 
-        Filterer.__init__(self)
+        BurinFilterer.__init__(self)
         self._name = None
         self.level = _check_level(level)
         self.formatter = None
@@ -64,7 +67,7 @@ class BurinHandler(Handler):
 
     # This property is supported by two methods in the standard library Handler
     # called get_name and set_name.  It is simplified here to just the property
-    # as neither the methods or property are documented in the standard library
+    # as the methods are not documented in the standard library
     @property
     def name(self):
         """
@@ -85,10 +88,21 @@ class BurinHandler(Handler):
             if name:
                 _handlers[name] = self
 
-    # Alias methods from the standard library handler
-    add_filter = Handler.addFilter
-    remove_filter = Handler.removeFilter
-    set_formatter = Handler.setFormatter
+    def acquire(self):
+        """
+        Acquires the handlers internal thread lock.
+
+        It is recommended to use a handler's lock in a context manager using
+        the **with** statement.  The lock is simply accessible as
+        :attr:`BurinHandler.lock` on any handler instance.
+
+        The :meth:`BurinHandler.acquire` and :meth:`BurinHandler.release`
+        methods are primarily provided for improved compatibility with the
+        standard library :class:`logging.Handler`.
+        """
+
+        if self.lock:
+            self.lock.acquire()
 
     def close(self):
         """
@@ -124,6 +138,29 @@ class BurinHandler(Handler):
         self.lock = RLock()
         _register_at_fork_reinit_lock(self)
 
+    def emit(self, record):
+        """
+        Should do whatever is need to actually log the specified record.
+
+        This should be implemented within a subclass and will only raise a
+        :exc:`NotImplementedError` in this base class.
+
+        :raises NotImplementedError: As this is not implemented in the base
+                                     class.
+        """
+
+        raise NotImplementedError("emit must be implemented by BurinHandler "
+                                  "subclasses")
+
+    def flush(self):
+        """
+        Meant to ensure that all logging output is flushed.
+
+        This is intended to be implemented within subclasses as needed; this
+        method on the base class does not do anything.
+        """
+        pass
+
     def format(self, record):
         """
         Formats the received log record.
@@ -140,6 +177,42 @@ class BurinHandler(Handler):
         fmt = self.formatter if self.formatter is not None else _defaultFormatter
 
         return fmt.format(record)
+
+    def handle(self, record):
+        """
+        Process the log record and possibly emit it.
+
+        This will check any filters that have been added to the handler and
+        emit the record if no filters return **False**.
+
+        If the record passes all filters then the instance of the record that
+        was emitted will be returned.
+
+        .. note::
+
+            In Python 3.12 the ability for this to return a record was added to
+            the standard library; it is supported here for all versions of
+            Python compatible with Burin (including versions below 3.12).
+
+        :param record: The log record to process.
+        :type record: BurinLogRecord
+        :returns: An instance of the record that was emitted, or **False** if
+                  the record was not emitted.
+        :rtype: BurinLogRecord | False
+        """
+
+        filterResult = self.filter(record)
+
+        if not filterResult:
+            return False
+
+        if isinstance(filterResult, BurinLogRecord):
+            record = filterResult
+
+        with self.lock:
+            self.emit(record)
+
+        return record
 
     def handle_error(self, record):
         """
@@ -198,6 +271,32 @@ class BurinHandler(Handler):
             finally:
                 del excType, excValue, excTrace
 
+    def release(self):
+        """
+        Releases the handler's internal thread lock.
+
+        It is recommended to use a handler's lock in a context manager using
+        the **with** statement.  The lock is simply accessible as
+        :attr:`BurinHandler.lock` on any handler instance.
+
+        The :meth:`BurinHandler.acquire` and :meth:`BurinHandler.release`
+        methods are primarily provided for improved compatibility with the
+        standard library :class:`logging.Handler`.
+        """
+
+        if self.lock:
+            self.lock.release()
+
+    def set_formatter(self, fmt):
+        """
+        Sets the formatter to be used by this handler.
+
+        :param fmt: The formatter to use.
+        :type fmt: BurinFormatter
+        """
+
+        self.formatter = fmt
+
     def set_level(self, level):
         """
         Sets the logging level of this handler.
@@ -224,4 +323,5 @@ class BurinHandler(Handler):
     # Aliases to override standard library handler
     createLock = create_lock
     handleError = handle_error
+    setFormatter = set_formatter
     setLevel = set_level
