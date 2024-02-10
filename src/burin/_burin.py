@@ -236,6 +236,15 @@ def shutdown(handlerList=None):
     This is automatically registered with :func:`atexit.register` and therefore
     shouldn't need to be called manually when an application closes.
 
+    .. note::
+
+        In Python 3.12 this was changed to check if a handler has a
+        *flushOnClose* property set to **False** to prevent flushing during
+        shutdown (targetting :class:`logging.MemoryHandler`).  This is
+        supported here for all versions of Python compatible with Burin
+        (including versions below 3.12).  The check was also left generic so
+        any custom handlers that may not want to flush when closed can benefit.
+
     :param handlerList: The handlers to be cleaned up.  If this is **None**
                         then it will default to an internal list of all Burin
                         handlers.  This should not need to be changed in almost
@@ -257,7 +266,12 @@ def shutdown(handlerList=None):
             if handler:
                 try:
                     handler.acquire()
-                    handler.flush()
+
+                    # Flush the handler unless it has a property and value that
+                    # says otherwise.
+                    if getattr(handler, "flushOnClose", True):
+                        handler.flush()
+
                     handler.close()
                 except (OSError, ValueError):
                     # Ignore errors that might be from a handler already being
