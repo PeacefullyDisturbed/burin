@@ -42,5 +42,5 @@ class BurinQueueHandler(BurinHandler, QueueHandler):
         :type level: int | str
         """
 
-        BurinHandler.__init__(self)
+        BurinHandler.__init__(self, level=level)
         self.queue = queue
