@@ -1,11 +1,12 @@
 """
 Burin Brace Log Record
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
 # Python imports
+import collections
 from string import Template
 
 # Burin imports
@@ -37,7 +38,9 @@ class BurinDollarLogRecord(BurinLogRecord):
         """
 
         msg = str(self.msg)
-        if self.kwargs:
+        if isinstance(self.args, collections.abc.Mapping):
+            msg = Template(msg).safe_substitute(self.args)
+        elif self.kwargs:
             msg = Template(msg).safe_substitute(self.kwargs)
         return msg
 

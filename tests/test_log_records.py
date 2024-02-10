@@ -346,6 +346,19 @@ class TestBraceLogMessage:
         assert logRecord.get_message() == testMessage.format(*testArgs,
                                                              **testKwargs)
 
+    def test_get_message_args_dict(self):
+        """
+        Tests get message formatting with a dictionary as the only argument.
+        """
+
+        testMessage = "Testing {msgStyle} formatting with {argType} only #{num}"
+        testArgs = ({"msgStyle": "brace", "argType": "single dictionary",
+                     "num": 1},)
+        logRecord = burin.BurinBraceLogRecord(testName, testLevel,
+                                              testPathname, testLineNumber,
+                                              testMessage, testArgs, None)
+        assert logRecord.get_message() == testMessage.format(**testArgs[0])
+
 
 class TestDollarLogMessage:
     """
@@ -375,6 +388,19 @@ class TestDollarLogMessage:
                                                testMessage, (), None,
                                                **testKwargs)
         assert logRecord.get_message() == Template(testMessage).safe_substitute(testKwargs)
+
+    def test_get_message_args_dict(self):
+        """
+        Tests get message formatting with a dictionary as the only argument.
+        """
+
+        testMessage = "Testing ${msgStyle} formatting with ${argType} only #${num}"
+        testArgs = ({"msgStyle": "brace", "argType": "single dictionary",
+                     "num": 1},)
+        logRecord = burin.BurinDollarLogRecord(testName, testLevel,
+                                               testPathname, testLineNumber,
+                                               testMessage, testArgs, None)
+        assert logRecord.get_message() == Template(testMessage).safe_substitute(testArgs[0])
 
 
 def test_get_log_record_factory_defaults():

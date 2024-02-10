@@ -1,13 +1,13 @@
 """
 Burin Log Record
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -98,7 +98,7 @@ class BurinLogRecord:
         # allow for things like:
         #     burin.debug("a %(a)d b %(b)s", {'a': 1, 'b':2})
         # This is a feature of the Python standard library's LogRecord class
-        # and is duplicated here (from Python 3.10.2) to provide a proper
+        # and is duplicated here (from Python 3.12.2) to provide a proper
         # replacement for as many use cases as possible
         if (args and len(args) == 1 and isinstance(args[0], collections.abc.Mapping) and args[0]):
             args = args[0]

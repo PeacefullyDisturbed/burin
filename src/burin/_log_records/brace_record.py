@@ -1,9 +1,12 @@
 """
 Burin Brace Log Record
 
-Copyright (c) 2022 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
+
+# Python imports
+import collections
 
 # Burin imports
 from .log_record import BurinLogRecord
@@ -31,7 +34,11 @@ class BurinBraceLogRecord(BurinLogRecord):
         """
 
         msg = str(self.msg)
-        if self.args or self.kwargs:
+        # Handle if only a single dictionary was passed in as an arugment,
+        # if not then self.args is a tuple
+        if isinstance(self.args, collections.abc.Mapping):
+            msg = msg.format(**self.args)
+        elif self.args or self.kwargs:
             msg = msg.format(*self.args, **self.kwargs)
         return msg
 
