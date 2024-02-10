@@ -72,8 +72,6 @@ class BurinHandler(BurinFilterer):
     def name(self):
         """
         The name of the handler.
-
-        This is primarily used for an internal library reference map.
         """
         return self._name
 
