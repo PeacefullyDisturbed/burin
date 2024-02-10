@@ -154,6 +154,8 @@ general purpose.
     disable
     error
     exception
+    get_handler_by_name
+    get_handler_names
     get_level_name
     get_level_names_mapping
     get_log_record_factory
@@ -214,6 +216,17 @@ customise the logger class used.
 .. autofunction:: get_logger_class
 
 .. autofunction:: set_logger_class
+
+~~~~~~~~
+Handlers
+~~~~~~~~
+
+These are top-level functions that can be used to get handler names or a
+specific handler by name if a name has be set on the handler.
+
+.. autofunction:: get_handler_by_name
+
+.. autofunction:: get_handler_names
 
 ~~~~~~~~~~~
 Log Records

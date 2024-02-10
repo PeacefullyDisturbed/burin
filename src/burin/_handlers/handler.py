@@ -198,7 +198,7 @@ class BurinHandler(BurinFilterer):
         :type record: BurinLogRecord
         :returns: An instance of the record that was emitted, or **False** if
                   the record was not emitted.
-        :rtype: BurinLogRecord | False
+        :rtype: BurinLogRecord | bool
         """
 
         filterResult = self.filter(record)
