@@ -410,6 +410,29 @@ class BurinLogger(BurinFilterer):
 
         return self.manager.get_logger(suffix, msgStyle=self.msgStyle)
 
+    def get_children(self):
+        """
+        Gets a set of loggers that are the immediate children of this logger.
+
+        .. note::
+
+            In Python 3.12 this method was changed on the standard
+            :class:`logging.Logger`; it is supported here for all versions
+            of Python compatible with Burin (including versions below 3.12).
+
+        :returns: A set of loggers that are direct children of this logger.
+        :rtype: set
+        """
+
+        hierLevel = 0 if self.root is self else len(self.name.split("."))
+
+        with _BurinLock:
+            loggerDict = self.manager.loggerDict
+            return {logger for name, logger in loggerDict.items()
+                    if isinstance(logger, BurinLogger) and
+                    logger.parent is self and
+                    len(logger.name.split(".")) == (hierLevel + 1)}
+
     def get_effective_level(self):
         """
         Gets the effective log level for this logger.
@@ -803,6 +826,7 @@ class BurinLogger(BurinFilterer):
     callHandlers = call_handlers
     findCaller = find_caller
     getChild = get_child
+    getChildren = get_children
     getEffectiveLevel = get_effective_level
     hasHandlers = has_handlers
     isEnabledFor = is_enabled_for

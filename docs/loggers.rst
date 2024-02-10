@@ -51,6 +51,7 @@ that is a full description of the class, it attributes, and methods.
     BurinLogger.exception
     BurinLogger.find_caller
     BurinLogger.get_child
+    BurinLogger.get_children
     BurinLogger.get_effective_level
     BurinLogger.handle
     BurinLogger.has_handlers
@@ -64,8 +65,8 @@ that is a full description of the class, it attributes, and methods.
 
 .. autoclass:: BurinLogger
     :members: add_handler, call_handlers, critical, debug, error, exception,
-              find_caller, get_child, get_effective_level, handle,
-              has_handlers, info, is_enabled_for, log, make_record,
+              find_caller, get_child, get_children, get_effective_level,
+              handle, has_handlers, info, is_enabled_for, log, make_record,
               remove_handler, set_level, warning
 
     .. autoproperty:: msgStyle
