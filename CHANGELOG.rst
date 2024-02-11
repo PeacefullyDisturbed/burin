@@ -84,7 +84,7 @@ Dependencies
 ^^^^^^^^^^^^
 
  * Replaced Flake8 with Ruff as dev dependency for linting
- * Updated Sphinx doc dependency to 7.26
+ * Updated Sphinx doc dependency to 7.2.6
  * Updated sphinx-rtd-theme doc dependency to 2.0.0
  * Added Pytest and Coverage dependencies for testing
  * Removed Flit dependency for building
