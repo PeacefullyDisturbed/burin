@@ -1,13 +1,13 @@
 """
 Burin Formatter
 
-Copyright (c) 2024 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 
 This module has some portions based on the Python standard logging library
 which is under the following licenses:
-Copyright (c) 2001-2022 Python Software Foundation; All Rights Reserved
-Copyright (c) 2001-2021 Vinay Sajip. All Rights Reserved.
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
 See included LICENSE file for details.
 """
 
@@ -254,7 +254,7 @@ class BurinFormatter(Formatter):
         return recordText
 
     # Formatter.formatTime was modified in Python 3.9; so for matching
-    # functionality in 3.7 and 3.8 it is recreated here (based on 3.10.2)
+    # functionality in 3.7 and 3.8 it is recreated here (based on 3.12.2)
     def format_time(self, record, datefmt=None):
         """
         Gets the creation time of the specified log record as formatted text.

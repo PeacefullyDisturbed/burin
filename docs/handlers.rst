@@ -8,7 +8,7 @@ Handlers are responsible for emitting the log record to specific destination.
 All handlers within Burin are derived from the :class:`BurinHandler` class.
 
 One feature of all Burin handlers is the ability to set the handler's log level
-when it is created.  Every handler class has an optional *level* parameter for
+when it is created.  Every handler class has an optional ``level`` parameter for
 this so :meth:`BurinHandler.set_level` doesn't need to be called seperately.
 The default level for every handler is :data:`NOTSET`.
 

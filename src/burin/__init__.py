@@ -1,7 +1,7 @@
 """
 Burin Logging Package
 
-Copyright (c) 2024 William Foster with BSD 3-Clause License
+Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 

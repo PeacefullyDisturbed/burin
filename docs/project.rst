@@ -27,7 +27,7 @@ encounter any issues please create an issue on the project's `issue
 tracker <https://github.com/PeacefullyDisturbed/burin/issues>`_.
 
 Any pull requests should adhere to the same general style of the existing code
-base and pass all current linting rules configured on the project.
+base and pass all current linting rules and tests configured on the project.
 
 -------------
 Documentation
@@ -38,3 +38,17 @@ Burin's documentation is hosted on `Read the Docs
 
 The documentation source is avaialble in the repository and can be built using
 `Sphinx <https://www.sphinx-doc.org/en/master/index.html>`_.
+
+--------------
+Build and Test
+--------------
+
+Burin uses `Hatch <https://hatch.pypa.io>`_ to manage environments, task
+running, and building for development.
+
+All tests use `PyTest <https://docs.pytest.org>`_ and can be run using the
+'test' environment defined in the Hatch configuration within the pyproject.toml
+file.
+
+`Ruff <https://docs.astral.sh/ruff/>`_ is used for linting and also configured
+through the pyproject.toml file.

@@ -21,10 +21,10 @@ Within Burin everything needed for normal usage is available on the top-level
 ``burin`` module.  There is typically no need to import any other packages or
 modules from within Burin.
 
-Formatters, loggers, and handlers are all documented in their own sections.
-This page will focus on the :ref:`burin:Constants`,
-:ref:`burin:Config Attributes`, and :ref:`burin:Functions` that are available
-directly on the ``burin`` module.
+:doc:`formatters`, :doc:`handlers`, :doc:`loggers`, and :doc:`filters` are all
+documented in their own sections. This page will focus on the
+:ref:`burin:Constants`, :ref:`burin:Config Attributes`, and
+:ref:`burin:Functions` that are available directly on the ``burin`` module.
 
 ---------
 Constants

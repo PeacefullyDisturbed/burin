@@ -47,7 +47,10 @@ test = [
 
 
 [project.urls]
+Changelog = "https://github.com/PeacefullyDisturbed/burin/blob/main/CHANGELOG.rst"
+Discussions = "https://github.com/PeacefullyDisturbed/burin/discussions"
 Documentation = "https://burin.readthedocs.io/"
+Issues  = "https://github.com/PeacefullyDisturbed/burin/issues"
 Source = "https://github.com/PeacefullyDisturbed/burin"
 
 ### Coverage ###
@@ -101,6 +104,9 @@ python = ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
 [tool.hatch.envs.test.scripts]
 cov = "coverage run {args} -m pytest"
 run = "pytest {args}"
+
+[tool.hatch.publish.index]
+disable = true
 
 [tool.hatch.version]
 path = "src/burin/__init__.py"

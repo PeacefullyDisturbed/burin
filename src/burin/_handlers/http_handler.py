@@ -95,7 +95,7 @@ class BurinHTTPHandler(BurinHandler, HTTPHandler):
     map_log_record = HTTPHandler.mapLogRecord
 
     # HTTPHandler.getConnection was added in Python 3.9; so for 3.7 and
-    # 3.8 support it is recreated here (based on 3.10.2)
+    # 3.8 support it is recreated here (based on 3.12.2)
     def get_connection(self, host, secure):
         """
         Gets the HTTP or HTTPS connection.

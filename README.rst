@@ -37,6 +37,10 @@ Currently Python 3.7, 3.8, 3.9, 3.10, 3.11, and 3.12 are all supported.  There
 are no dependencies or additional requirements for Burin and it should work on
 any platform that Python does.
 
+.. warning::
+
+    Python 3.7 support is deprecated and will be removed in a future release.
+
 An important aspect of Burin is an easy migration that allows changing from the
 ``logging`` package to Burin without anything breaking in most use cases.
 While class names may need to be changed this generally should work well.
@@ -79,8 +83,8 @@ standard ``logging`` module.
 * Library level logging calls (eg. ``burin.log``) can specify a logger to
   use other than the root logger, so calling ``get_logger`` isn't necessary
   first.
-* Logging features from newer versions of Python (eg.
-  ``logging.Formatter`` *defaults* in 3.10) are implemented in Burin and
+* Logging features from newer versions of Python (eg. ``logAsyncioTasks`` in
+  3.12) are implemented in Burin and
   available in all supported Python versions.
 * Everything that should be needed is available at the top level of the
   library; no more extra imports of ``logging.handlers`` and
@@ -88,8 +92,10 @@ standard ``logging`` module.
 * Multiple log record factory classes are supported at the same time, and which
   is used can be set per logger instance to allow for greater customisation.
 * ``BurinLoggerAdapter`` instances will merge *extra* values from logging
-  calls with the preset values from instantiation; nesting built-in adapters
+  calls with the pre-set values from instantiation; nesting built-in adapters
   can actually be useful now.
+* All handlers within Burin support a *level* parameter during initialization
+  so an extra call ``BurinHandler.set_level`` isn't needed
 * ``BurinSocketHandler`` and ``BurinDatagramHandler`` by default use
   pickling protocol version **4** instead of **1**.  This can be set to a
   different protocol version when creating the handler.
@@ -100,10 +106,10 @@ standard ``logging`` module.
   instead of directly on the module.
 * Deprecated methods such as ``fatal`` and ``warn`` are not implemented.
 
-There are several other differences which are internal to Burin and not
-documented here.  Just be sure to read the documentation if you are going to
-create subclasses, or read the docstrings in the code if accessing internal
-classes and methods .
+There are several other differences which are more minor or are internal to
+Burin and not documented in this list.  If you are going to create subclasses
+or use internal classes and methods, then just make sure to read the
+documentation or docstrings within the code.
 
 ====================
 What Can't Burin Do?

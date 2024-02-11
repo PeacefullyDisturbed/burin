@@ -41,6 +41,10 @@ Currently Python 3.7, 3.8, 3.9, 3.10, 3.11, and 3.12 are all supported.  There
 are no dependencies or additional requirements for Burin and it should work on
 any platform that Python does.
 
+.. warning::
+
+    Python 3.7 support is deprecated and will be removed in a future release.
+
 An important aspect of Burin is an easy migration that allows changing from the
 :mod:`logging` package to Burin without anything breaking in most use cases.
 While class names may need to be changed this generally should work well.
