@@ -30,7 +30,7 @@ requires-python = ">=3.7"
 [project.optional-dependencies]
 # Dev and Doc dependecies only support latest supported Python version
 dev = [
-    "ruff ~=0.2.1"
+    "ruff ~=0.2.2"
 ]
 doc = [
     "Sphinx ~=7.2.6",
@@ -39,10 +39,10 @@ doc = [
 # Test dependecies must support all supported Python versions
 test = [
     "coverage[toml] ~=7.2.7; python_version =='3.7'",
-    "coverage[toml] ~=7.4.1; python_version >='3.8' and python_version < '3.11'",
-    "coverage ~=7.4.1; python_version >='3.11'",
+    "coverage[toml] ~=7.4.3; python_version >='3.8' and python_version < '3.11'",
+    "coverage ~=7.4.3; python_version >='3.11'",
     "pytest ~=7.4.4; python_version =='3.7'",
-    "pytest ~=8.0.0; python_version >='3.8'"
+    "pytest ~=8.0.2; python_version >='3.8'"
 ]
 
 
