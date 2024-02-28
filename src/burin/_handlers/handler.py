@@ -257,7 +257,8 @@ class BurinHandler(BurinFilterer):
 
                 try:
                     sys.stderr.write(f"Message: {record.msg}\nArguments: "
-                                     f"{record.args}\n")
+                                     f"{record.args}\nKeyword Arguments: "
+                                     f"{record.kwargs}\n")
                 except RecursionError:  # Python issue 36272
                     raise
             except Exception:
