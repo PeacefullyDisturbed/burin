@@ -105,6 +105,9 @@ standard ``logging`` module.
   rather than the end of a day.
 * ``BurinTimedRotatingHandler`` also allows intervals to be used with
   weekday and midnight set for *when*.
+* ``BurinSMTPHandler`` supports ``ssl.SSLContext`` objects for its
+  *secure* parameter, and will also use *secure* to established an encrypted
+  connection even if no credentials are specified.
 * All methods and functions are *underscore_separated*, but *camelCase* aliases
   are available for an easier transition from the standard library.
 * Logging configuration attributes ``logMultiproccessing``, ``logProcesses``,

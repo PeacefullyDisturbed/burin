@@ -15,6 +15,7 @@ See included LICENSE file for details.
 from datetime import datetime
 from email.message import EmailMessage
 import smtplib
+from ssl import SSLContext
 
 # Burin imports
 from .handler import BurinHandler
@@ -52,6 +53,10 @@ class BurinSMTPHandler(BurinHandler):
             use *secure* even without credentials.  This will at least send
             the message over a connection using STARTTLS.
 
+            Also burin allows *secure* to be a :class:`ssl.SSLContext` instead
+            of just a tuple with optional *keyfile* and *certfile* as these are
+            deprecated in the :meth:`smtplib.SMTP.starttls` call.
+
         :param mailhost: The SMTP server to connect to and send mail through.
                          By default the standard SMTP port is used; if you need
                          to use a custom port this should be a tuple in the
@@ -68,13 +73,16 @@ class BurinSMTPHandler(BurinHandler):
                             pass a tuple here in the form
                             *(username, password)*.
         :type credentials: tuple(str, str)
-        :param secure: If this is set to a tuple to it will enable STARTTLS
-                       encryption for the connection to the SMTP server.  The
-                       tuple can follow one of three forms, an empty tuple
-                       *()*, a single value tuple with the name of a keyfile
-                       *(keyfile,)*, or a 2-value tuple with the names of a
-                       keyfile and certificate file *(keyfile,
-                       certificatefile)*.  This is then passed to
+        :param secure: If this is set to a tuple or a :class:`ssl.SSLContext`
+                       it will enable STARTTLS encryption for the connection to
+                       the SMTP server.  It is recommended to use a
+                       :class:`ssl.SSLContext` as the *keyfile* and *certfile*
+                       params for :meth:`smtplib.SMTP.starttls` are deprecated.
+                       However, If using a tuple it can follow one of three
+                       forms, an empty tuple *()*, a single value tuple with
+                       the name of a keyfile *(keyfile,)*, or a 2-value tuple
+                       with the names of a keyfile and certificate file
+                       *(keyfile, certfile)*.  This is then passed to
                        :meth:`smtplib.SMTP.starttls`.
         :type secure: tuple
         :param timeout: A timeout (in seconds) for communications with the SMTP
@@ -133,7 +141,10 @@ class BurinSMTPHandler(BurinHandler):
             # Use TLS set to be used
             if self.secure is not None:
                 smtp.ehlo()
-                smtp.starttls(*self.secure)
+                if isinstance(self.secure, SSLContext):
+                    smtp.starttls(context=self.secure)
+                else:
+                    smtp.starttls(*self.secure)
                 smtp.ehlo()
 
 
