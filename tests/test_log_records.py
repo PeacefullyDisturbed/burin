@@ -13,9 +13,6 @@ from string import Template
 import sys
 import threading
 
-# PyTest imports
-import pytest
-
 # Burin import
 import burin
 
