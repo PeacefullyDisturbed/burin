@@ -12,20 +12,17 @@ See included LICENSE file for details.
 """
 
 # Python imports
-from logging.handlers import SMTPHandler
+from datetime import datetime
+from email.message import EmailMessage
+import smtplib
 
 # Burin imports
 from .handler import BurinHandler
 
 
-class BurinSMTPHandler(BurinHandler, SMTPHandler):
+class BurinSMTPHandler(BurinHandler):
     """
     A handler that can send emails over SMTP for logging events.
-
-    .. note::
-
-        This is a subclass of :class:`logging.handlers.SMTPHandler` and
-        functions identically to it in normal use cases.
 
     This requires an email server that you have permission to send emails
     through; it cannot be used standalone to send directly to a receiving
@@ -49,6 +46,12 @@ class BurinSMTPHandler(BurinHandler, SMTPHandler):
         sending credentials then *secure* should not be **None** to prevent
         them being sent unencrypted.
 
+        .. note::
+
+            Unlike the standard :class:`logging.handlers.SMTPHandler` you can
+            use *secure* even without credentials.  This will at least send
+            the message over a connection using STARTTLS.
+
         :param mailhost: The SMTP server to connect to and send mail through.
                          By default the standard SMTP port is used; if you need
                          to use a custom port this should be a tuple in the
@@ -65,12 +68,12 @@ class BurinSMTPHandler(BurinHandler, SMTPHandler):
                             pass a tuple here in the form
                             *(username, password)*.
         :type credentials: tuple(str, str)
-        :param secure: If *credentials* is not none then can be set to a tuple
-                       to enable encryption for the connection to the SMTP
-                       server.  The tuple can follow one of three forms, an
-                       empty tuple *()*, a single value tuple with the name of
-                       a keyfile *(keyfile,)*, or a 2-value tuple with the
-                       names of a keyfile and certificate file *(keyfile,
+        :param secure: If this is set to a tuple to it will enable STARTTLS
+                       encryption for the connection to the SMTP server.  The
+                       tuple can follow one of three forms, an empty tuple
+                       *()*, a single value tuple with the name of a keyfile
+                       *(keyfile,)*, or a 2-value tuple with the names of a
+                       keyfile and certificate file *(keyfile,
                        certificatefile)*.  This is then passed to
                        :meth:`smtplib.SMTP.starttls`.
         :type secure: tuple
@@ -102,5 +105,62 @@ class BurinSMTPHandler(BurinHandler, SMTPHandler):
         self.subject = subject
         self.timeout = timeout
 
-    # Alias methods from the standard library handler
-    get_subject = SMTPHandler.getSubject
+    def emit(self, record):
+        """
+        Emits a log record.
+
+        This will format the log record, prepare the email message, and then
+        send the message.
+
+        :param record: The log record to emit.
+        :type record: BurinLogRecord
+        """
+
+        # Create the message
+        msg = EmailMessage()
+        msg["From"] = self.fromaddr
+        msg["To"] = ",".join(self.toaddrs)
+        msg["Subject"] = self.getSubject(record)
+        msg["Date"] = datetime.now().astimezone()
+        msg.set_content(self.format(record))
+
+        port = self.mailport if self.mailport is not None else smtplib.SMTP_PORT
+
+        try:
+            # Connect to the host
+            smtp = smtplib.SMTP(self.mailhost, port, timeout=self.timeout)
+
+            # Use TLS set to be used
+            if self.secure is not None:
+                smtp.ehlo()
+                smtp.starttls(*self.secure)
+                smtp.ehlo()
+
+
+            # Login if credentials were provided
+            if self.username is not None:
+                smtp.login(self.username, self.password)
+
+            smtp.send_message(msg)
+            smtp.quit()
+        except Exception:
+            self.handle_error(record)
+
+    def get_subject(self, record): # noqa: ARG002
+        """
+        Gets the subject for the mail.
+
+        This just returns the *subject* value; however this class can be
+        overridden to determine subject based on the record.
+
+        :param record: The log record being handled.  This is not used in this
+                       basic method implementation.
+        :type record: BurinLogRecord
+        :returns: The subject for the mail.
+        :rtype: str
+        """
+
+        return self.subject
+
+    # Aliases for better compatibility to replace standard library logging
+    getSubject = get_subject
