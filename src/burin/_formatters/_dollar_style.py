@@ -38,13 +38,13 @@ class _BurinDollarStyle(_BurinPercentStyle):
         """
         This sets the template using the format string.
 
-        This will simply call :meth:`super().__init__` with all ``*args`` and
-        ``**kwargs`` to initialize the class; then it creates the
+        This will simply call :meth:`_BurinPercentStyle.__init__` with all
+        ``*args`` and ``**kwargs`` to initialize the class; then it creates the
         :class:`string.Template` instance using the *self._fmt* which is used
         for formatting later.
         """
 
-        super().__init__(*args, **kwargs)
+        _BurinPercentStyle.__init__(self, *args, **kwargs)
         self._tpl = Template(self._fmt)
 
     def uses_time(self):
