@@ -12,7 +12,6 @@ See included LICENSE file for details.
 """
 
 # Python imports
-from logging.handlers import NTEventLogHandler
 import os.path
 
 # Burin imports
@@ -20,14 +19,9 @@ from .._log_levels import CRITICAL, DEBUG, ERROR, INFO, WARNING
 from .handler import BurinHandler
 
 
-class BurinNTEventLogHandler(BurinHandler, NTEventLogHandler):
+class BurinNTEventLogHandler(BurinHandler):
     """
     A handler which sends events to Windows NT Event Log.
-
-    .. note::
-
-        This is a subclass of :class:`logging.handlers.NTEventLogHandler` and
-        functions identically to it in normal use cases.
 
     To use this handler you must be on a Windows system and have the `pywin32`
     package installed.
@@ -100,14 +94,91 @@ class BurinNTEventLogHandler(BurinHandler, NTEventLogHandler):
                   "logging) appear to be unavailable")
             self._welu = None
 
-    # Alias methods from the standard library handler
-    get_event_category = NTEventLogHandler.getEventCategory
-    get_event_type = NTEventLogHandler.getEventType
-    get_message_id = NTEventLogHandler.getMessageID
-
     def close(self):
         """
         Closes the handler.
         """
 
         BurinHandler.close(self)
+
+    def emit(self, record):
+        """
+        Emits a log record.
+
+        This will get the message ID, event category, and event type, then it
+        will log the message to the NT event log.
+
+        .. note::
+
+            If the win32evtlogutil could not be imported during handler
+            initialization then this will not do anything.
+
+        :param record: The log record to emit.
+        :type record: BurinLogRecord
+        """
+
+        if self._welu:
+            try:
+                msgId = self.get_message_id(record)
+                category = self.get_event_category(record)
+                evtType = self.get_event_type(record)
+                msg = self.format(record)
+                self._welu.ReportEvent(self.appname, msgId, category, evtType, [msg])
+            except Exception:
+                self.handle_error(record)
+
+    def get_event_category(self, record): # noqa: ARG002
+        """
+        Returns the event category for the record.
+
+        This can be overidden to specify a category, by default this just
+        returns **0**.
+
+        :param record: The log record being handled.  This is not used in this
+                       basic method implementation.
+        :type record: BurinLogRecord
+        :returns: The event category for the record.
+        :rtype: int
+        """
+
+        return 0
+
+    def get_event_type(self, record):
+        """
+        Returns the event type for the record.
+
+        A basic mapping of the standard log levels to Win32 event log types is
+        used for this.  If you are using your own log levels or want to
+        customise this process you can either override the *typemap* property
+        of the handler, or override this method.
+
+        :param record: The log record being handled.
+        :type record: BurinLogRecord
+        :returns: The Win32 event log type for the record.  If the log record's
+                  level does not map to a type this will return the ERROR type.
+        :rtype: int
+        """
+
+        return self.typemap.get(record.levelno, self.deftype)
+
+    def get_message_id(self, record): # noqa: ARG002
+        """
+        Return the message ID for the record.
+
+        This returns **1** be default which is the base message ID in
+        *win32service.pyd*.  This can be changed or customised by overriding
+        this method and crafting your log messages or records in a specific
+        way to allow a lookup for each ID.
+
+        :param record: The log record being handled.
+        :type record: BurinLogRecord
+        :returns: The event message ID for the log record.
+        :rtype: int
+        """
+
+        return 1
+
+    # Aliases for better compatibility to replace standard library logging
+    getEventCategory = get_event_category
+    getEventType = get_event_type
+    getMessageId = get_message_id

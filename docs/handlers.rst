@@ -4,7 +4,7 @@
 Handlers
 ========
 
-Handlers are responsible for emitting the log record to specific destination.
+Handlers are responsible for emitting the log record to a specific destination.
 All handlers within Burin are derived from the :class:`BurinHandler` class.
 
 One feature of all Burin handlers is the ability to set the handler's log level
@@ -14,24 +14,10 @@ The default level for every handler is :data:`NOTSET`.
 
 .. note::
 
-    Even though many handlers in Burin inherit from handlers within the
-    standard :mod:`logging` package, they cannot be used interchangeably.
-
-    Using :mod:`logging` handlers with Burin or Burin handlers with
-    :mod:`logging` will cause issues and may result in exceptions or lost logs.
-
-.. note::
-
-    Only methods defined within each Burin handler class are documented here.
-    All handlers inherit from the :class:`BurinHandler` class and will also
-    mention in their description if they inherit from any other handlers.
-
-    If a handler inherits from the :mod:`logging` package then methods that
-    have not been changed are not documented here.
-
-    Additionally all methods of handler classes with an *underscore_separated*
-    name also have a *camelCase* alias name which matches the names used in the
-    standard :mod:`logging` library.
+    The handlers in the Burin library are not usable with the standard
+    :mod:`logging` package, and vice-versa.  Using :mod:`logging` handlers with
+    Burin or Burin handlers with :mod:`logging` will cause issues and may
+    result in exceptions or lost logs.
 
 Below is a list of all handlers available within Burin.  After that detailed
 descriptions of each handler is provided.
@@ -67,18 +53,18 @@ to rotate files.  This should not be used directly but instead can be inherited
 from to create custom handlers.
 
 .. autoclass:: BurinBaseRotatingHandler
-    :members: do_rollover, emit, should_rollover
+    :members: do_rollover, emit, rotate, rotation_filename, should_rollover
 
 ---------------------
 BurinBufferingHandler
 ---------------------
 
 This is a base buffering handler which can be used to create other handlers
-which requiring a buffering pattern.  This should not be used directly but
+which require a buffering pattern.  This should not be used directly but
 instead can be inherited from to create custom handlers.
 
 .. autoclass:: BurinBufferingHandler
-    :members: close
+    :members: close, emit, flush, should_flush
 
 --------------------
 BurinDatagramHandler
@@ -120,7 +106,7 @@ BurinHTTPHandler
 This handler can send logs to another service using HTTP.
 
 .. autoclass:: BurinHTTPHandler
-    :members: get_connection
+    :members: emit, get_connection, map_log_record
 
 ------------------
 BurinMemoryHandler
@@ -129,7 +115,7 @@ BurinMemoryHandler
 This handler can buffer logs in memory until a specified capacity is reached.
 
 .. autoclass:: BurinMemoryHandler
-    :members: close
+    :members: close, flush, set_target, should_flush
 
 ----------------------
 BurinNTEventLogHandler
@@ -139,7 +125,7 @@ This handler can log to the Windows event log; this requires the `pywin32`
 package.
 
 .. autoclass:: BurinNTEventLogHandler
-    :members: close
+    :members: close, emit, get_event_category, get_event_type, get_message_id
 
 ----------------
 BurinNullHandler
@@ -165,6 +151,7 @@ process handle all of the actual logging (and I/O involved) while the others
 just add to the queue.
 
 .. autoclass:: BurinQueueHandler
+    :members: emit, enqueue, prepare
 
 ------------------
 BurinQueueListener
@@ -184,6 +171,7 @@ This handler can automatically rotate a log file when it reaches a specific
 size.
 
 .. autoclass:: BurinRotatingFileHandler
+    :members: do_rollover, should_rollover
 
 ----------------
 BurinSMTPHandler
@@ -192,6 +180,7 @@ BurinSMTPHandler
 This handler can send logs through email using a SMTP server.
 
 .. autoclass:: BurinSMTPHandler
+    :members: emit, get_subject
 
 ------------------
 BurinSocketHandler
@@ -201,7 +190,8 @@ This handler can send pickled log records through a socket to another Python
 application.
 
 .. autoclass:: BurinSocketHandler
-    :members: close, handle_error, make_pickle
+    :members: close, create_socket, emit, handle_error, make_pickle,
+              make_socket, send
 
 ------------------
 BurinStreamHandler
@@ -210,7 +200,7 @@ BurinStreamHandler
 This handler can write logs to an I/O stream.
 
 .. autoclass:: BurinStreamHandler
-    :members: set_stream
+    :members: emit, flush, set_stream
 
 ------------------
 BurinSyslogHandler
@@ -219,7 +209,7 @@ BurinSyslogHandler
 This handler can write logs out using Syslog.
 
 .. autoclass:: BurinSyslogHandler
-    :members: close
+    :members: close, create_socket, emit, encode_priority
 
 -----------------------------
 BurinTimedRotatingFileHandler
@@ -228,7 +218,8 @@ BurinTimedRotatingFileHandler
 This handler can rotate log files based on a timing pattern.
 
 .. autoclass:: BurinTimedRotatingFileHandler
-    :members: should_rollover
+    :members: compute_rollover, do_rollover, get_files_to_delete,
+              should_rollover
 
 -----------------------
 BurinWatchedFileHandler
@@ -238,4 +229,4 @@ This handler watches the file it is writing to and will close and reopen it
 automatically if it detects any changes.
 
 .. autoclass:: BurinWatchedFileHandler
-    :members: emit
+    :members: emit, reopen_if_needed

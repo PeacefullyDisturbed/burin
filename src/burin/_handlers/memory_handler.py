@@ -3,26 +3,24 @@ Burin Memory Handler
 
 Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
-"""
 
-# Python imports
-from logging.handlers import MemoryHandler
+This module has some portions based on the Python standard logging library
+which is under the following licenses:
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
+See included LICENSE file for details.
+"""
 
 # Burin imports
 from .._log_levels import _check_level
 from .buffering_handler import BurinBufferingHandler
 
 
-class BurinMemoryHandler(BurinBufferingHandler, MemoryHandler):
+class BurinMemoryHandler(BurinBufferingHandler):
     """
     A handler which buffers log records in memory.
 
     This is derived from :class:`BurinBufferingHandler`.
-
-    .. note::
-
-        This is a subclass of :class:`logging.handlers.MemoryHandler` and
-        functions identically to it in normal use cases.
 
     This handler will flush when the buffer reaches the specified *capacity* or
     when a record of the specified *flushLevel* or above is emitted.
@@ -55,10 +53,6 @@ class BurinMemoryHandler(BurinBufferingHandler, MemoryHandler):
         self.target = target
         self.flushOnClose = flushOnClose
 
-    # Alias methods from the standard library handler
-    set_target = MemoryHandler.setTarget
-    should_flush = MemoryHandler.shouldFlush
-
     def close(self):
         """
         Closes the handler.
@@ -74,3 +68,48 @@ class BurinMemoryHandler(BurinBufferingHandler, MemoryHandler):
             with self.lock:
                 self.target = None
                 BurinBufferingHandler.close(self)
+
+    def flush(self):
+        """
+        This sends the memory handler's buffered records to the target handler.
+
+        If there is no current target handler this will not do anything.
+        """
+
+        with self.lock:
+            if self.target is not None:
+                for record in self.buffer:
+                    self.target.handle(record)
+
+                self.buffer.clear()
+
+    def set_target(self, target):
+        """
+        Sets the target handler for this handler.
+
+        :param target: The target handler to flush to when this handler's
+                       buffer is full or should be flushed.
+        :type target: BurinHandler
+        """
+
+        with self.lock:
+            self.target = target
+
+    def should_flush(self, record):
+        """
+        Checks the level and buffer size for if the buffer should be flushed.
+
+        This will determine if the buffer should be flushed based on either the
+        current size of the buffer and also the record level.
+
+        :param record: The log record being handled.
+        :type record: BurinLogRecord
+        :returns: Whether the buffer should be flushed.
+        :rtype: bool
+        """
+
+        return (len(self.buffer >= self.capacity)) or (record.levelno > self.flushLevel)
+
+    # Aliases for better compatibility to replace standard library logging
+    setTarget = set_target
+    shouldFlush = should_flush

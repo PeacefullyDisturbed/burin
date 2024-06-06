@@ -26,10 +26,14 @@ standard :mod:`logging` module.
   calls with the pre-set values from instantiation; nesting built-in adapters
   can actually be useful now.
 * All handlers within Burin support a *level* parameter during initialization
-  so an extra call :meth:`BurinHandler.set_level` isn't needed
-* :class:`BurinSocketHandler` and :class:`BurinDatagramHandler` by default use
-  pickling protocol version **4** instead of **1**.  This can be set to a
+  so an extra call :meth:`BurinHandler.set_level` isn't needed.
+* :class:`BurinSocketHandler` and :class:`BurinDatagramHandler` by default will
+  use pickling protocol version **4** instead of **1**.  This can be set to a
   different protocol version when creating the handler.
+* :class:`BurinTimedRotatingHandler` treats midnight as the start of a day
+  rather than the end of a day.
+* :class:`BurinTimedRotatingHandler` also allows intervals to be used with
+  weekday and midnight set for *when*.
 * All methods and functions are *underscore_separated*, but *camelCase* aliases
   are available for an easier transition from the standard library.
 * Logging configuration attributes ``logMultiproccessing``, ``logProcesses``,
@@ -169,9 +173,9 @@ Customisable Log Records
 
 Setting the :attr:`msgStyle` of a logger actually sets the log record factory
 that is used.  While the default built-in factories are focused on formatting,
-you can actually add any other custom factories that may be useful in your
-program. These factories can then just be used where needed instead of for all
-log messages as in the standard library.
+you can add any other custom factories that may be useful in your program.
+These factories can then just be used where needed instead of for all log
+messages as in the standard library.
 
 This can be incredibly useful when you need a log to display values in a
 specific way, but only want that extra processing to run if the log

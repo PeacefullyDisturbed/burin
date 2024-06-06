@@ -5,21 +5,13 @@ Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
-# Python imports
-from logging.handlers import BufferingHandler
-
 # Burin imports
 from .handler import BurinHandler
 
 
-class BurinBufferingHandler(BurinHandler, BufferingHandler):
+class BurinBufferingHandler(BurinHandler):
     """
     A handler that stores log records in a buffer.
-
-    .. note::
-
-        This is a subclass of :class:`logging.handlers.BufferingHandler` and
-        functions identically to it in normal use cases.
 
     Each time a record is added to the buffer a check is done to see if the
     buffer should be flushed.
@@ -44,9 +36,6 @@ class BurinBufferingHandler(BurinHandler, BufferingHandler):
         self.capacity = capacity
         self.buffer = []
 
-    # Alias methods from the standard library handler
-    should_flush = BufferingHandler.shouldFlush
-
     def close(self):
         """
         Closes the handler and flush the buffer.
@@ -56,3 +45,51 @@ class BurinBufferingHandler(BurinHandler, BufferingHandler):
             self.flush()
         finally:
             BurinHandler.close(self)
+
+    def emit(self, record):
+        """
+        Emits a log record.
+
+        This appends the record to the buffer.  Then this checks if the
+        handler should flush, and if so flushes.
+
+        :param record: The log record to emit.
+        :type record: BurinLogRecord
+        """
+
+        self.buffer.append(record)
+
+        if self.should_flush(record):
+            self.flush()
+
+    def flush(self):
+        """
+        Flushes the handler's buffer.
+
+        This should be overridden in subclasses to customise the flushing
+        behaviour.
+        """
+
+        with self.lock:
+            self.buffer.clear()
+
+    def should_flush(self, record): # noqa: ARG002
+        """
+        Checks if the handler should flush its buffer.
+
+        This will simply return whether the buffer is currently at or above
+        capacity.  This can be overridden in subclasses to perform other
+        checks including ones that may use the provided *record* to make a
+        determination.
+
+        :param record: The log record being handled.  This is not used in this
+                       base class method.
+        :type record: BurinLogRecord
+        :returns: Whether the handler should flush its buffer.
+        :rtype: bool
+        """
+
+        return len(self.buffer) >= self.capacity
+
+    # Aliases for better compatibility to replace standard library logging
+    shouldFlush = should_flush

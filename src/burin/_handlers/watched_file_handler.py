@@ -3,24 +3,26 @@ Burin Watched File Handler
 
 Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
+
+This module has some portions based on the Python standard logging library
+which is under the following licenses:
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
+See included LICENSE file for details.
 """
 
 # Python imports
-from logging.handlers import WatchedFileHandler
 import io
+import os
+from stat import ST_DEV, ST_INO
 
 # Burin imports
 from .file_handler import BurinFileHandler
 
 
-class BurinWatchedFileHandler(BurinFileHandler, WatchedFileHandler):
+class BurinWatchedFileHandler(BurinFileHandler):
     """
     A handler that watches for changes to the file.
-
-    .. note::
-
-        This is a subclass of :class:`logging.handlers.WatchedFileHandler` and
-        functions identically to it in normal use cases.
 
     If the file this is logging to changes it will close and then reopen the
     file.
@@ -64,9 +66,6 @@ class BurinWatchedFileHandler(BurinFileHandler, WatchedFileHandler):
         self.ino = -1
         self._statstream()
 
-    # Alias methods from the standard library handler
-    reopen_if_needed = WatchedFileHandler.reopenIfNeeded
-
     def emit(self, record):
         """
         Emits the record to the file.
@@ -79,3 +78,38 @@ class BurinWatchedFileHandler(BurinFileHandler, WatchedFileHandler):
 
         self.reopen_if_needed()
         BurinFileHandler.emit(self, record)
+
+    def reopen_if_needed(self):
+        """
+        Reopens the log file if needed.
+
+        This checks if the underlying file has changed and if it has it closes
+        and then reopens the file to get the current stream.
+        """
+
+        try:
+            statResult = os.stat(self.baseFilename)
+        except FileNotFoundError:
+            statResult = None
+
+        if (self.stream is not None and
+            (statResult is None or statResult[ST_DEV] != self.dev or statResult[ST_INO] != self.ino)):
+            # Clean up existing file handle
+            self.stream.flush()
+            self.stream.close()
+
+            # Clear the set stream in cause _open fails
+            self.stream = None
+
+            # Open and stat the new stream
+            self.stream = self._open()
+            self._statstream()
+
+    # Aliases for better compatibility to replace standard library logging
+    reopenIfNeeded = reopen_if_needed
+
+    def _statstream(self):
+        if self.stream is not None:
+            statResult = os.fstat(self.stream.fileno())
+            self.dev = statResult[ST_DEV]
+            self.ino = statResult[ST_INO]

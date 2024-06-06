@@ -118,7 +118,7 @@ class BurinHandler(BurinFilterer):
 
     def create_lock(self):
         """
-        Acquires a re-entrant lock for the handler for threading protection.
+        Creates a re-entrant lock for the handler for threading protection.
 
         The lock is available through the instance :attr:`BurinHandler.lock`
         attribute or it can be used with :meth:`BurinHandler.acquire` and

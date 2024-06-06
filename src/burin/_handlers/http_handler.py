@@ -12,7 +12,8 @@ See included LICENSE file for details.
 """
 
 # Python imports
-from logging.handlers import HTTPHandler
+import base64
+import urllib.parse
 
 # Burin imports
 from .handler import BurinHandler
@@ -21,14 +22,9 @@ from .handler import BurinHandler
 allowedMethods = ["GET", "POST"]
 
 
-class BurinHTTPHandler(BurinHandler, HTTPHandler):
+class BurinHTTPHandler(BurinHandler):
     """
     A handler that can send log records over HTTP to a Web server.
-
-    .. note::
-
-        This is a subclass of :class:`logging.HTTPHandler` and
-        functions identically to it in normal use cases.
 
     .. note::
 
@@ -91,17 +87,57 @@ class BurinHTTPHandler(BurinHandler, HTTPHandler):
         self.secure = secure
         self.url = url
 
-    # Alias methods from the standard library handler
-    map_log_record = HTTPHandler.mapLogRecord
+    def emit(self, record):
+        """
+        Emits a log record.
 
-    # HTTPHandler.getConnection was added in Python 3.9; so for 3.7 and
-    # 3.8 support it is recreated here (based on 3.12.2)
+        This will send the record to a web server using a percent-encoded
+        dictionary.
+
+        :param record: The log record to emit.
+        :type record: BurinLogRecord
+        """
+
+        try:
+            host = self.host
+            connection = self.get_connection(host, self.secure)
+            url = self.url
+            data = urllib.parse.urlencode(self.map_log_record(record))
+
+            if self.method == "GET":
+                separator = "&" if url.find("?") >= 0 else "?"
+                url = f"{url}{separator}{data}"
+
+            connection.putrequest(self.method, url)
+
+            if self.method == "POST":
+                connection.putheader("Content-type", "application/x-www-form-urlencoded")
+                connection.putheader("Content-length", str(len(data)))
+
+            if self.credentials:
+                authCreds = f"{self.credentials[0]}:{self.credentials[1]}".encode("utf-8")
+                authEncoded = base64.b64encode(authCreds).strip().decode("ascii")
+                connection.putheader("Authorization", f"Basic {authEncoded}")
+
+            connection.endheaders()
+            if self.method == "POST":
+                connection.send(data.encode("utf-8"))
+            connection.getresponse()
+        except Exception:
+            self.handle_error(record)
+
     def get_connection(self, host, secure):
         """
         Gets the HTTP or HTTPS connection.
 
         This can be overridden to change how the connection is created; for
         example if a proxy is required.
+
+        .. note::
+
+            In Python 3.9 :class:`logging.handlers.HTTPHandler` added this
+            undocumented method.  It is available here for all versions of
+            Python compatible with Burin (including versions below 3.9).
 
         :param host: The host to connect to.
         :type host: str
@@ -119,5 +155,21 @@ class BurinHTTPHandler(BurinHandler, HTTPHandler):
 
         return connection
 
+    def map_log_record(self, record):
+        """
+        Default mapping of log record to dictionary for CGI data.
+
+        This can be overridden in subclasses to customise the record map
+        format.
+
+        :param record: The log record being handled.
+        :type record: BurinLogRecord
+        :returns: A map of the record properties and values.
+        :rtype: dict{str: Any}
+        """
+
+        return record.__dict__
+
     # Aliases for better compatibility to replace standard library logging
     getConnection = get_connection
+    mapLogRecord = map_log_record

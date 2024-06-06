@@ -12,23 +12,23 @@ See included LICENSE file for details.
 """
 
 # Python imports
-from logging.handlers import SocketHandler
 import pickle
+import socket
 import struct
+import time
 
 # Burin imports
 from .handler import BurinHandler
 
 
-class BurinSocketHandler(BurinHandler, SocketHandler):
+class BurinSocketHandler(BurinHandler):
     """
     A handler that writes pickled log records to a network socket.
 
     .. note::
 
-        This is a subclass of :class:`logging.handlers.SocketHandler` but has
-        a change that may be incompatible depending on the receiver's Python
-        version.
+        This has a change from the :class:`logging.handlers.SocketHandler` that
+        may be incompatible depending on the receiver's Python version.
 
         The default pickle protocol version used is **4** instead of **1**;
         this can be configured though by the *pickleProtocol* parameter which
@@ -76,10 +76,6 @@ class BurinSocketHandler(BurinHandler, SocketHandler):
         self.retryMax = 30.0
         self.retryFactor = 2.0
 
-    # Alias methods from the standard library handler
-    create_socket = SocketHandler.createSocket
-    make_socket = SocketHandler.makeSocket
-
     def close(self):
         """
         Closes and handler and the socket.
@@ -93,6 +89,51 @@ class BurinSocketHandler(BurinHandler, SocketHandler):
                 sock.close()
 
             BurinHandler.close(self)
+
+    def create_socket(self):
+        """
+        Tries creating the socket.
+
+        If creation of the socket fails this will use a progressively greater
+        period of time to retry creation up to
+        :attr:`BurinSocketHandler.retryMax` (default 30 seconds).
+        """
+
+        now = time.time()
+
+        attempt = True if self.retryTime is None else (now >= self.retryTime)
+
+        if attempt:
+            try:
+                self.sock = self.make_socket()
+                self.retryTime = None
+            except OSError:
+                # Socket creation failed, determine retry time
+                if self.retryTime is None:
+                    self.retryPeriod = self.retryStart
+                else:
+                    self.retryPeriod *= self.retryFactor
+
+                    if self.retryPeriod > self.retryMax:
+                        self.retryPeriod = self.retryMax
+
+                self.retryTime = now + self.retryPeriod
+
+    def emit(self, record):
+        """
+        Emits a log record.
+
+        This will pickle the record and then send it through the socket.
+
+        :param record: The log record to emit.
+        :type record: BurinLogRecord
+        """
+
+        try:
+            pickledRecord = self.make_pickle(record)
+            self.send(pickledRecord)
+        except Exception:
+            self.handle_error(record)
 
     def handle_error(self, record):
         """
@@ -144,6 +185,64 @@ class BurinSocketHandler(BurinHandler, SocketHandler):
 
         return recordLength + recordBytes
 
+    def make_socket(self, timeout=1):
+        """
+        Makes the socket that is used for the connection.
+
+        If :attr:`BurinSocketHandler.port` is not **None** then this will make
+        a TCP socket, otherwise it will create a UNIX socket.
+
+        :param timeout: The timeout to configure for the socket.
+        :type timeout: int
+        :returns: The socket that was created.
+        :rtype: socket.socket
+        :raises OSError: If making a UNIX socket fails.
+        """
+
+        if self.port is not None:
+            sock = socket.create_connection(self.address, timeout=timeout)
+        else:
+            sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            sock.settimeout(timeout)
+
+            try:
+                sock.connect(self.address)
+            except OSError:
+                sock.close()
+                raise
+
+        return sock
+
+    def send(self, pickledRecord):
+        """
+        Sends the specified pickled record to the socket.
+
+        .. note::
+
+            The parameter for this has been renamed from *s* to *pickledRecord*
+            compared to :meth:`logging.handlers.SocketHandler.send`.  This is
+            not a keyword arg and therefore this shouldn't have an impact on
+            any functionality.
+
+        This will try to create the socket before sending if it hasn't been
+        made yet.
+
+        :param pickledRecord: The pickled log record to send over the socket.
+        :type pickledRecord: bytes
+        """
+
+        if self.sock is None:
+            self.create_socket()
+
+        if self.sock is not None:
+            try:
+                self.sock.sendall(pickledRecord)
+            except OSError:
+                self.sock.close()
+                self.sock = None
+
     # Aliases for better compatibility to replace standard library logging
+    createSocket = create_socket
     handleError = handle_error
     makePickle = make_pickle
+    makeSocket = make_socket

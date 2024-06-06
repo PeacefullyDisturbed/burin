@@ -6,22 +6,17 @@ See included LICENSE file for details.
 """
 
 # Python imports
-from logging.handlers import BaseRotatingHandler
+import os
 
 # Burin imports
 from .file_handler import BurinFileHandler
 
 
-class BurinBaseRotatingHandler(BurinFileHandler, BaseRotatingHandler):
+class BurinBaseRotatingHandler(BurinFileHandler):
     """
     Base class for handlers that rotate log files.
 
     This is derived from :class:`BurinFileHandler`.
-
-    .. note::
-
-        This is a subclass of :class:`logging.handlers.BaseRotatingHandler` and
-        functions identically to it in normal use cases.
 
     This should not be instantiated directly except within a subclass
     *__init__* method.
@@ -91,6 +86,52 @@ class BurinBaseRotatingHandler(BurinFileHandler, BaseRotatingHandler):
         except Exception:
             self.handle_error(record)
 
+    def rotate(self, source, dest):
+        """
+        Rotate the current log.
+
+        This will call the *rotator* attribute of the handler, if it is
+        callable, along with the source and destination.  If the attribute
+        isn't callable (it defaults to **None**), then the source is simply
+        renamed to the destination.
+
+        .. note::
+
+            Default rotation is done using :func:`os.replace` instead of
+            :func:`os.rename` which is used in the standard
+            :class:`logging.BaseRotatingHandler`.  This is so the renaming
+            operation is more consistent across different platforms.
+
+        :param source: The source filename to rotate.
+        :type source: string | Path
+        :param dest: The destination filename.
+        :type dest: string | Path
+        """
+
+        if callable(self.rotator):
+            self.rotator(source, dest)
+        elif os.path.exists(source):
+            os.replace(source, dest)
+
+    def rotation_filename(self, defaultName):
+        """
+        Modifies the filename when rotating.
+
+        This is provided so that a method for customising filenames can be
+        used during rotation.
+
+        If the *namer* attribute of the handler is callable then it is passed
+        the *defaultName* and the resulting value is returned.  If it is not
+        callable then the *defaultName* value is returned unchanged.
+
+        :param defaultName: The default name for the file.
+        :type defaultName: str
+        :returns: The name to be used for the file rotation.
+        :rtype: str
+        """
+
+        return self.namer(defaultName) if callable(self.namer) else defaultName
+
     def should_rollover(self, record):
         """
         This method should check if the rotation of the file should be done.
@@ -115,5 +156,7 @@ class BurinBaseRotatingHandler(BurinFileHandler, BaseRotatingHandler):
                                   "BurinBaseRotatingHandler subclasses")
 
     # Aliases for better compatibility to replace standard library logging
+    # rotation_filename is not aliased as it never existed in the standard
+    # library with the old camel casing
     doRollover = do_rollover
     shouldRollover = should_rollover

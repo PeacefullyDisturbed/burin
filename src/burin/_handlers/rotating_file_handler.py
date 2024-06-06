@@ -3,26 +3,27 @@ Burin Rotating File Handler
 
 Copyright (c) 2022-2024 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
+
+This module has some portions based on the Python standard logging library
+which is under the following licenses:
+Copyright (c) 2001-2024 Python Software Foundation; All Rights Reserved
+Copyright (c) 2001-2022 Vinay Sajip. All Rights Reserved.
+See included LICENSE file for details.
 """
 
 # Python imports
-from logging.handlers import RotatingFileHandler
 import io
+import os
 
 # Burin imports
 from .base_rotating_handler import BurinBaseRotatingHandler
 
 
-class BurinRotatingFileHandler(BurinBaseRotatingHandler, RotatingFileHandler):
+class BurinRotatingFileHandler(BurinBaseRotatingHandler):
     """
     A handler that rotates the file when it reaches a certain size.
 
     This is derived from :class:`BurinBaseRotatingHandler`.
-
-    .. note::
-
-        This is a subclass of :class:`logging.handlers.RotatingFileHandler` and
-        functions identically to it in normal use cases.
 
     The file is rotated once it reaches a specific size.  A limit can also be
     placed on how many rotated files are kept.
@@ -88,6 +89,67 @@ class BurinRotatingFileHandler(BurinBaseRotatingHandler, RotatingFileHandler):
         self.maxBytes = maxBytes
         self.backupCount = backupCount
 
-    # Alias methods from the standard library handler
-    do_rollover = RotatingFileHandler.doRollover
-    should_rollover = RotatingFileHandler.shouldRollover
+    def do_rollover(self):
+        """
+        Does the rollover of the file.
+
+        .. note::
+
+            This uses :func:`os.replace` instead of the combination of
+            :func:`os.remove` and :func:`os.rename` from the standard logging
+            library.
+
+            Functionally this should be the same, but it simplifies the
+            operation slightly.
+        """
+
+        if self.stream is not None:
+            self.stream.close()
+            self.stream = None
+
+        if self.backupCount > 0:
+            for suffix in range(self.backupCount - 1, 0, -1):
+                sourceFilename = self.rotation_filename(f"{self.baseFilename}.{suffix}")
+                destFilename = self.rotation_filename(f"{self.baseFilename}.{suffix + 1}")
+
+                if os.path.exists(sourceFilename):
+                    os.replace(sourceFilename, destFilename)
+
+            destFilename = self.rotation_filename(f"{self.baseFilename}.1")
+            self.rotate(self.baseFilename, destFilename)
+
+        if not self.delay:
+            self.stream = self._open()
+
+    def should_rollover(self, record):
+        """
+        Determines if a file rollover should occur.
+
+        This uses the supplied record to check if the file would exceed the
+        size limit that has been set.
+
+        :param record: The log record being handled.
+        :type record: BurinLogRecord
+        :returns: Whether a file rotation should occur as the new record would
+                  put the file past the size limit.
+        :rtype: bool
+        """
+
+        # Ensure only regular files are rotated
+        if os.path.exists(self.baseFilename) and not os.path.isfile(self.baseFilename):
+            return False
+
+        if self.stream is None:
+            self.stream = self._open()
+
+        if self.maxBytes > 0:
+            msg = f"{self.format(record)}\n"
+            self.stream.seek(0, os.SEEK_END)
+            if (self.stream.tell() + len(msg)) > self.maxBytes:
+                return True
+
+        return False
+
+    # Aliases for better compatibility to replace standard library logging
+    doRollover = do_rollover
+    shouldRollover = should_rollover

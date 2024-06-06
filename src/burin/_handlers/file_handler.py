@@ -12,7 +12,6 @@ See included LICENSE file for details.
 """
 
 # Python imports
-from logging import FileHandler
 import io
 import os
 
@@ -22,16 +21,11 @@ from .handler import BurinHandler
 from .stream_handler import BurinStreamHandler
 
 
-class BurinFileHandler(BurinStreamHandler, FileHandler):
+class BurinFileHandler(BurinStreamHandler):
     """
     A handler for writing log records to a file.
 
     This is derived from :class:`BurinStreamHandler`.
-
-    .. note::
-
-        This is a subclass of :class:`logging.FileHandler` and
-        functions identically to it in normal use cases.
     """
 
     def __init__(self, filename, mode="a", encoding=None, delay=False,
