@@ -1,24 +1,26 @@
-.. image:: https://img.shields.io/pypi/v/burin?color=007EC6
+|version-badge| |license-badge| |py-versions-badge| |action-check-badge| |coverage-badge| |docs-build-badge|
+
+.. |version-badge| image:: https://img.shields.io/pypi/v/burin?color=007EC6
     :target: https://pypi.org/project/burin/
     :alt: PyPI - Release
 
-.. image:: https://img.shields.io/pypi/l/burin
+.. |license-badge| image:: https://img.shields.io/pypi/l/burin
     :target: https://github.com/PeacefullyDisturbed/burin/blob/main/LICENSE
     :alt: License
 
-.. image:: https://img.shields.io/pypi/pyversions/burin?color=blue
+.. |py-versions-badge| image:: https://img.shields.io/pypi/pyversions/burin?color=blue
     :target: https://pypi.org/project/burin/
     :alt: Python Versions
 
-.. image:: https://img.shields.io/github/actions/workflow/status/PeacefullyDisturbed/burin/push_check.yaml?branch=main&logo=github&label=main
+.. |action-check-badge| image:: https://img.shields.io/github/actions/workflow/status/PeacefullyDisturbed/burin/push_check.yaml?branch=main&logo=github&label=main
     :target: https://github.com/PeacefullyDisturbed/burin/actions/workflows/push_check.yaml
     :alt: GitHub Actions Workflow Status
 
-.. image:: https://codecov.io/gh/PeacefullyDisturbed/burin/graph/badge.svg?token=E76T93FQ5F
+.. |coverage-badge| image:: https://codecov.io/gh/PeacefullyDisturbed/burin/graph/badge.svg?token=E76T93FQ5F
     :target: https://codecov.io/gh/PeacefullyDisturbed/burin
     :alt: Codecov Coverage Percentage
 
-.. image:: https://img.shields.io/readthedocs/burin
+.. |docs-build-badge| image:: https://img.shields.io/readthedocs/burin
     :target: https://burin.readthedocs.io/en/latest/?badge=latest
     :alt: Read the Docs - Documentation Status
 
@@ -95,10 +97,14 @@ standard ``logging`` module.
   calls with the pre-set values from instantiation; nesting built-in adapters
   can actually be useful now.
 * All handlers within Burin support a *level* parameter during initialization
-  so an extra call ``BurinHandler.set_level`` isn't needed
-* ``BurinSocketHandler`` and ``BurinDatagramHandler`` by default use
+  so an extra call ``BurinHandler.set_level`` isn't needed.
+* ``BurinSocketHandler`` and ``BurinDatagramHandler`` by default will use
   pickling protocol version **4** instead of **1**.  This can be set to a
   different protocol version when creating the handler.
+* ``BurinTimedRotatingHandler`` treats midnight as the start of a day
+  rather than the end of a day.
+* ``BurinTimedRotatingHandler`` also allows intervals to be used with
+  weekday and midnight set for *when*.
 * All methods and functions are *underscore_separated*, but *camelCase* aliases
   are available for an easier transition from the standard library.
 * Logging configuration attributes ``logMultiproccessing``, ``logProcesses``,
