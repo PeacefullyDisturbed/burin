@@ -17,23 +17,13 @@ import burin
 
 
 # Basic testing values
+testFunction = "test_function"
 testLevel = burin.INFO
 testLineNumber = 10
 testMessage = "This is a log message"
 testName = "TestFormatting"
 testPathname = "/test/path"
-
-
-@pytest.fixture
-def basic_record():
-    """
-    Creates a basic log record to be used in other tests.
-    """
-
-    testRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
-                                      testLineNumber, testMessage, (), None)
-    testRecord.message = testRecord.get_message()
-    return testRecord
+testStackInfo = "Test stack information"
 
 
 class TestBurinPercentStyle:
@@ -65,31 +55,36 @@ class TestBurinPercentStyle:
         Tests formatting a valid format and record.
         """
 
+        testRecord = basic_record(name=testName, msg=testMessage)
+        testRecord.message = testRecord.get_message()
         validPattern = "%(name)s :: %(message)s"
         validStyle = burin._formatters._percent_style._BurinPercentStyle(validPattern)
         testMapping = {"name": testName, "message": testMessage}
-        assert validStyle.format(basic_record) == validPattern % testMapping
+        assert validStyle.format(testRecord) == validPattern % testMapping
 
     def test_format_invalid(self, basic_record):
         """
         Tests formatting an invalid format with a record.
         """
 
+        testRecord = basic_record()
         invalidPattern = "%(name)s :: %(missingField)s :: %(message)s"
         invalidStyle = burin._formatters._percent_style._BurinPercentStyle(invalidPattern)
         with pytest.raises(burin.FormatError):
-            invalidStyle.format(basic_record)
+            invalidStyle.format(testRecord)
 
     def test_defaults(self, basic_record):
         """
         Tests that defaults mapping is used correctly in formatting.
         """
 
+        testRecord = basic_record(name=testName, msg=testMessage)
+        testRecord.message = testRecord.get_message()
         defaultsPattern = "%(name)s :: %(message)s :: %(defaultField)s"
         defaults = {"defaultField": "Fixed value!"}
         style = burin._formatters._percent_style._BurinPercentStyle(defaultsPattern, defaults=defaults)
         fieldValues = {**defaults, "name": testName, "message": testMessage}
-        assert style.format(basic_record) == defaultsPattern % fieldValues
+        assert style.format(testRecord) == defaultsPattern % fieldValues
 
     def test_uses_time_true(self):
         """
@@ -169,31 +164,36 @@ class TestBurinBraceStyle:
         Tests formatting a valid format and record.
         """
 
+        testRecord = basic_record(name=testName, msg=testMessage)
+        testRecord.message = testRecord.get_message()
         validPattern = "{name} :: {message}"
         validStyle = burin._formatters._brace_style._BurinBraceStyle(validPattern)
         testMapping = {"name": testName, "message": testMessage}
-        assert validStyle.format(basic_record) == validPattern.format(**testMapping)
+        assert validStyle.format(testRecord) == validPattern.format(**testMapping)
 
     def test_format_invalid(self, basic_record):
         """
         Tests formatting an invalid format with a record.
         """
 
+        testRecord = basic_record()
         invalidPattern = "{name} :: {missingField} :: {message}"
         invalidStyle = burin._formatters._brace_style._BurinBraceStyle(invalidPattern)
         with pytest.raises(burin.FormatError):
-            invalidStyle.format(basic_record)
+            invalidStyle.format(testRecord)
 
     def test_defaults(self, basic_record):
         """
         Tests that defaults mapping is used correctly in formatting.
         """
 
+        testRecord = basic_record(name=testName, msg=testMessage)
+        testRecord.message = testRecord.get_message()
         defaultsPattern = "{name} :: {message} :: {defaultField}"
         defaults = {"defaultField": "Fixed value!"}
         style = burin._formatters._brace_style._BurinBraceStyle(defaultsPattern, defaults=defaults)
         fieldValues = {**defaults, "name": testName, "message": testMessage}
-        assert style.format(basic_record) == defaultsPattern.format(**fieldValues)
+        assert style.format(testRecord) == defaultsPattern.format(**fieldValues)
 
     def test_uses_time_true(self):
         """
@@ -262,31 +262,36 @@ class TestBurinDollarStyle:
         Tests formatting a valid format and record.
         """
 
+        testRecord = basic_record(name=testName, msg=testMessage)
+        testRecord.message = testRecord.get_message()
         validPattern = "${name} :: ${message}"
         validStyle = burin._formatters._dollar_style._BurinDollarStyle(validPattern)
         testMapping = {"name": testName, "message": testMessage}
-        assert validStyle.format(basic_record) == Template(validPattern).substitute(testMapping)
+        assert validStyle.format(testRecord) == Template(validPattern).substitute(testMapping)
 
     def test_format_invalid(self, basic_record):
         """
         Tests formatting an invalid format with a record.
         """
 
+        testRecord = basic_record()
         invalidPattern = "${name} :: ${missingField} :: ${message}"
         invalidStyle = burin._formatters._dollar_style._BurinDollarStyle(invalidPattern)
         with pytest.raises(burin.FormatError):
-            invalidStyle.format(basic_record)
+            invalidStyle.format(testRecord)
 
     def test_defaults(self, basic_record):
         """
         Tests that defaults mapping is used correctly in formatting.
         """
 
+        testRecord = basic_record(name=testName, msg=testMessage)
+        testRecord.message = testRecord.get_message()
         defaultsPattern = "${name} :: ${message} :: ${defaultField}"
         defaults = {"defaultField": "Fixed value!"}
         style = burin._formatters._dollar_style._BurinDollarStyle(defaultsPattern, defaults=defaults)
         fieldValues = {**defaults, "name": testName, "message": testMessage}
-        assert style.format(basic_record) == Template(defaultsPattern).substitute(fieldValues)
+        assert style.format(testRecord) == Template(defaultsPattern).substitute(fieldValues)
 
     def test_uses_time_true(self):
         """
@@ -308,19 +313,10 @@ class TestBurinDollarStyle:
 
 
 @pytest.fixture
-def sample_log_record():
+def sample_log_record(basic_record):
     """
     Create a generic log record for formatter testing.
     """
-
-    # Basic testing values
-    testFunction = "test_function"
-    testLevel = burin.INFO
-    testLineNumber = 10
-    testMessage = "Test log record message"
-    testName = "TestRecord"
-    testPathname = "/test/path"
-    testStackInfo = "Test stack information"
 
     # Raise a test exception so it has a proper traceback
     testExceptionInfo = None
@@ -329,8 +325,9 @@ def sample_log_record():
     except Exception as exc:
         testExceptionInfo = (type(exc), exc, exc.__traceback__)
 
-    return burin.BurinBraceLogRecord(testName, testLevel, testPathname, testLineNumber, testMessage, (),
-                                     testExceptionInfo, func=testFunction, sinfo=testStackInfo)
+    return basic_record(testName, testLevel, testPathname, testLineNumber,
+                        testMessage, (), testExceptionInfo, func=testFunction,
+                        sinfo=testStackInfo)
 
 
 class TestBurinFormatter:

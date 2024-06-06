@@ -112,19 +112,19 @@ class TestLogRecord:
                                           testLineNumber, "", (), None)
         assert noneRecord.taskName is None
 
-    def test_log_multiprocessing_enabled(self):
+    def test_log_multiprocessing_enabled(self, monkeypatch):
         """
         Tests that enabling logMultiprocessing adds relevant data to record.
         """
 
         assert burin.config.logMultiprocessing is True
-        defaultProcessName = multiprocessing.current_process().name
         testProcessName = "TestProcess"
-        multiprocessing.current_process().name = testProcessName
-        mpRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
+        with monkeypatch.context() as monkey:
+            monkey.setattr(multiprocessing.current_process(), "name",
+                           testProcessName)
+            mpRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
                                         testLineNumber, "", (), None)
-        assert mpRecord.processName == testProcessName
-        multiprocessing.current_process().name = defaultProcessName
+            assert mpRecord.processName == testProcessName
 
     def test_log_multiprocessing_disabled(self):
         """
@@ -136,52 +136,39 @@ class TestLogRecord:
                                           testLineNumber, "", (), None)
         assert noneRecord.processName is None
 
-    def test_log_multiprocessing_unavailable(self):
+    def test_log_multiprocessing_unavailable(self, monkeypatch):
         """
         Tests when multiprocessing is unavailable (Python issue #8200).
         """
 
-        mpModule = "multiprocessing"
-        defaultProcessName = multiprocessing.current_process().name
         testProcessName = "TestProcess"
 
         # Get the module, change the process name, then clear the module
-        mp = sys.modules.get(mpModule)
-        mp.current_process().name = testProcessName
-        sys.modules[mpModule] = None
+        with monkeypatch.context() as monkey:
+            monkey.setattr(multiprocessing.current_process(), "name",
+                           testProcessName)
+            monkey.setitem(sys.modules, "multiprocessing", None)
 
-        # Set to log multiprocessing and check the record
-        burin.config.logMultiprocessing = True
-        mpRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
-                                        testLineNumber, "", (), None)
-        assert mpRecord.processName == "MainProcess"
+            # Set to log multiprocessing and check the record
+            burin.config.logMultiprocessing = True
+            mpRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
+                                            testLineNumber, "", (), None)
+            assert mpRecord.processName == "MainProcess"
 
-        # Restore the module and process name
-        sys.modules[mpModule] = mp
-        mp.current_process().name = defaultProcessName
-
-    def test_log_multiprocessing_exception(self):
+    def test_log_multiprocessing_exception(self, monkeypatch):
         """
         Tests record for when an exception occurs getting the process name.
         """
 
-        defaultProcessName = multiprocessing.current_process().name
-        testProcessName = "TestProcess"
-
         # Overwrite the current_process function to force an exception
-        multiprocessing.current_process().name = testProcessName
-        cp = multiprocessing.current_process
-        multiprocessing.current_process = None
+        with monkeypatch.context() as monkey:
+            monkey.setattr(multiprocessing, "current_process", None)
 
-        # Set to log multiprocessing and check the record
-        burin.config.logMultiprocessing = True
-        mpRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
-                                        testLineNumber, "", (), None)
-        assert mpRecord.processName == "MainProcess"
-
-        # Restore the current_process function and process name
-        multiprocessing.current_process = cp
-        multiprocessing.current_process().name = defaultProcessName
+            # Set to log multiprocessing and check the record
+            burin.config.logMultiprocessing = True
+            mpRecord = burin.BurinLogRecord(testName, testLevel, testPathname,
+                                            testLineNumber, "", (), None)
+            assert mpRecord.processName == "MainProcess"
 
     def test_log_processes_enabled(self):
         """
@@ -445,27 +432,21 @@ def test_make_log_record_from_dict():
     newRecord = burin.make_log_record(recordDict)
     assert newRecord.get_message() == testMessage
 
-@pytest.fixture
-def custom_record():
+
+class CustomRecord(burin.BurinLogRecord):
     """
-    Creates a custom log record for testing.
+    Test record with fixed message output.
     """
+    pass
 
-    class CustomRecord(burin.BurinLogRecord):
-        """
-        Test record with fixed message output.
-        """
-        pass
 
-    return CustomRecord
-
-def test_set_log_record_factory_custom(custom_record):
+def test_set_log_record_factory_custom():
     """
     Tests setting a custom log record factory.
     """
 
     customFactoryKey = "custom"
 
-    burin.set_log_record_factory(custom_record, customFactoryKey)
+    burin.set_log_record_factory(CustomRecord, customFactoryKey)
 
-    assert burin.get_log_record_factory(customFactoryKey) is custom_record
+    assert burin.get_log_record_factory(customFactoryKey) is CustomRecord

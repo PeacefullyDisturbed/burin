@@ -26,49 +26,44 @@ siblingName = "A.BB"
 similarName = "AA"
 
 @pytest.fixture
-def parent_record():
+def parent_record(basic_record):
     """
     Creates a log record that would by at the top of a hierarchy.
     """
 
-    return burin.BurinLogRecord(parentName, testLevel, testPathname,
-                                testLineNumber, testMessage, (), None)
+    return basic_record(parentName)
 
 @pytest.fixture
-def child_record():
+def child_record(basic_record):
     """
     Creates a log record that is a child of a parent in the hierarchy.
     """
 
-    return burin.BurinLogRecord(childName, testLevel, testPathname,
-                                testLineNumber, testMessage, (), None)
+    return basic_record(childName)
 
 @pytest.fixture
-def grandchild_record():
+def grandchild_record(basic_record):
     """
     Creates a log record that is a grandchild of a parent in the hierarchy.
     """
 
-    return burin.BurinLogRecord(grandchildName, testLevel, testPathname,
-                                testLineNumber, testMessage, (), None)
+    return basic_record(grandchildName)
 
 @pytest.fixture
-def sibling_record():
+def sibling_record(basic_record):
     """
     Creates a log record that is a sibling of a child in the hierarchy.
     """
 
-    return burin.BurinLogRecord(siblingName, testLevel, testPathname,
-                                testLineNumber, testMessage, (), None)
+    return basic_record(siblingName)
 
 @pytest.fixture
-def similar_record():
+def similar_record(basic_record):
     """
     Creates a log record that is a similar to the parent in the hierarchy.
     """
 
-    return burin.BurinLogRecord(similarName, testLevel, testPathname,
-                                testLineNumber, testMessage, (), None)
+    return basic_record(similarName)
 
 @pytest.fixture
 def empty_filter():
@@ -137,37 +132,6 @@ class TestFilter:
         assert child_filter.filter(similar_record) is False
 
 
-@pytest.fixture
-def basic_filterer():
-    """
-    Creates a basic filterer instance.
-    """
-
-    return burin.BurinFilterer()
-
-
-class LineIncrementFilter(burin.BurinFilter):
-    """
-    Returns a new record instance with an incremented line number.
-
-    This is purely for testing modification filters within a filterer.
-    """
-
-    def filter(self, record):
-        """
-        Creates a new record instance with an incremented line number.
-
-        :param record: The record to alter.
-        :type record: BurinLogRecord
-        :returns: A new record instance with an incremented line number.
-        :rtype: BurinLogRecord
-        """
-
-        return burin.BurinLogRecord(record.name, record.levelno, record.pathname, record.lineno + 1,
-                                    record.msg, record.args,record.exc_info, record.funcName,
-                                    record.stack_info, **record.kwargs)
-
-
 class TestFilterer:
     """
     Tests the filterer base class used for loggers and handlers.
@@ -180,25 +144,28 @@ class TestFilterer:
         """
 
         testFilters = [empty_filter, parent_filter, child_filter]
+        addfilterer = basic_filterer()
 
         for eachFilter in testFilters:
-            basic_filterer.add_filter(eachFilter)
+            addfilterer.add_filter(eachFilter)
 
-        assert len(basic_filterer.filters) == len(testFilters)
+        assert len(addfilterer.filters) == len(testFilters)
 
         for i in range(len(testFilters)):
-            assert basic_filterer.filters[i] is testFilters[i]
+            assert addfilterer.filters[i] is testFilters[i]
 
     def test_readd_filter(self, basic_filterer, empty_filter):
         """
         Tests that re-adding the same filter doesn't duplicate it in the list.
         """
 
-        basic_filterer.add_filter(empty_filter)
-        basic_filterer.add_filter(empty_filter)
+        reAddfilterer = basic_filterer()
 
-        assert len(basic_filterer.filters) == 1
-        assert basic_filterer.filters[0] is empty_filter
+        reAddfilterer.add_filter(empty_filter)
+        reAddfilterer.add_filter(empty_filter)
+
+        assert len(reAddfilterer.filters) == 1
+        assert reAddfilterer.filters[0] is empty_filter
 
     def test_remove_filter(self, basic_filterer, empty_filter, parent_filter,
                            child_filter):
@@ -207,16 +174,17 @@ class TestFilterer:
         """
 
         testFilters = [empty_filter, parent_filter, child_filter]
+        removefilterer = basic_filterer()
 
         for eachFilter in testFilters:
-            basic_filterer.add_filter(eachFilter)
+            removefilterer.add_filter(eachFilter)
 
-        assert len(basic_filterer.filters) == len(testFilters)
+        assert len(removefilterer.filters) == len(testFilters)
 
-        basic_filterer.remove_filter(parent_filter)
+        removefilterer.remove_filter(parent_filter)
 
-        assert len(basic_filterer.filters) == (len(testFilters) - 1)
-        assert parent_filter not in basic_filterer.filters
+        assert len(removefilterer.filters) == (len(testFilters) - 1)
+        assert parent_filter not in removefilterer.filters
 
     def test_remove_non_present_filter(self, basic_filterer, empty_filter,
                                        parent_filter):
@@ -224,11 +192,13 @@ class TestFilterer:
         Tests removing a filter not in filter list doesn't impact the list.
         """
 
-        basic_filterer.add_filter(empty_filter)
-        basic_filterer.remove_filter(parent_filter)
+        removefilterer = basic_filterer()
 
-        assert len(basic_filterer.filters) == 1
-        assert basic_filterer.filters[0] is empty_filter
+        removefilterer.add_filter(empty_filter)
+        removefilterer.remove_filter(parent_filter)
+
+        assert len(removefilterer.filters) == 1
+        assert removefilterer.filters[0] is empty_filter
 
     def test_single_filter_checks(self, basic_filterer, parent_filter,
                                   parent_record, child_record,
@@ -238,13 +208,15 @@ class TestFilterer:
         Tests a single filter check with different records.
         """
 
-        basic_filterer.add_filter(parent_filter)
+        checkFilterer = basic_filterer()
 
-        assert basic_filterer.filter(parent_record) is parent_record
-        assert basic_filterer.filter(child_record) is child_record
-        assert basic_filterer.filter(grandchild_record) is grandchild_record
-        assert basic_filterer.filter(sibling_record) is sibling_record
-        assert basic_filterer.filter(similar_record) is False
+        checkFilterer.add_filter(parent_filter)
+
+        assert checkFilterer.filter(parent_record) is parent_record
+        assert checkFilterer.filter(child_record) is child_record
+        assert checkFilterer.filter(grandchild_record) is grandchild_record
+        assert checkFilterer.filter(sibling_record) is sibling_record
+        assert checkFilterer.filter(similar_record) is False
 
     def test_multi_filter_checks(self, basic_filterer, parent_filter,
                                  child_filter, parent_record, child_record,
@@ -254,25 +226,30 @@ class TestFilterer:
         Tests multiple filter checks with different records.
         """
 
-        basic_filterer.add_filter(parent_filter)
-        basic_filterer.add_filter(child_filter)
+        checkFilterer = basic_filterer()
 
-        assert basic_filterer.filter(parent_record) is False
-        assert basic_filterer.filter(child_record) is child_record
-        assert basic_filterer.filter(grandchild_record) is grandchild_record
-        assert basic_filterer.filter(sibling_record) is False
-        assert basic_filterer.filter(similar_record) is False
+        checkFilterer.add_filter(parent_filter)
+        checkFilterer.add_filter(child_filter)
 
-    def test_modifying_filters(self, basic_filterer, parent_record):
+        assert checkFilterer.filter(parent_record) is False
+        assert checkFilterer.filter(child_record) is child_record
+        assert checkFilterer.filter(grandchild_record) is grandchild_record
+        assert checkFilterer.filter(sibling_record) is False
+        assert checkFilterer.filter(similar_record) is False
+
+    def test_modifying_filters(self, basic_filterer, parent_record,
+                               line_increment_filter):
         """
         Tests that modified records are returned through the filter process.
         """
 
-        # Use two filters to ensure the record is progressively modified.
-        basic_filterer.add_filter(LineIncrementFilter())
-        basic_filterer.add_filter(LineIncrementFilter())
+        modifyingFilterer = basic_filterer()
 
-        alteredRecord = basic_filterer.filter(parent_record)
+        # Use two filters to ensure the record is progressively modified.
+        modifyingFilterer.add_filter(line_increment_filter())
+        modifyingFilterer.add_filter(line_increment_filter())
+
+        alteredRecord = modifyingFilterer.filter(parent_record)
 
         assert alteredRecord is not parent_record
         assert alteredRecord.lineno == (parent_record.lineno + 2)
