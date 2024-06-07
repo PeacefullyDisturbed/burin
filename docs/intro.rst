@@ -30,9 +30,9 @@ standard :mod:`logging` module.
 * :class:`BurinSocketHandler` and :class:`BurinDatagramHandler` by default will
   use pickling protocol version **4** instead of **1**.  This can be set to a
   different protocol version when creating the handler.
-* :class:`BurinTimedRotatingHandler` treats midnight as the start of a day
+* :class:`BurinTimedRotatingFileHandler` treats midnight as the start of a day
   rather than the end of a day.
-* :class:`BurinTimedRotatingHandler` also allows intervals to be used with
+* :class:`BurinTimedRotatingFileHandler` also allows intervals to be used with
   weekday and midnight set for *when*.
 * :class:`BurinSMTPHandler` supports :class:`ssl.SSLContext` objects for its
   *secure* parameter, and will also use *secure* to established an encrypted

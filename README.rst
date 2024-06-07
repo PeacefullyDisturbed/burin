@@ -101,9 +101,9 @@ standard ``logging`` module.
 * ``BurinSocketHandler`` and ``BurinDatagramHandler`` by default will use
   pickling protocol version **4** instead of **1**.  This can be set to a
   different protocol version when creating the handler.
-* ``BurinTimedRotatingHandler`` treats midnight as the start of a day
+* ``BurinTimedRotatingFileHandler`` treats midnight as the start of a day
   rather than the end of a day.
-* ``BurinTimedRotatingHandler`` also allows intervals to be used with
+* ``BurinTimedRotatingFileHandler`` also allows intervals to be used with
   weekday and midnight set for *when*.
 * ``BurinSMTPHandler`` supports ``ssl.SSLContext`` objects for its
   *secure* parameter, and will also use *secure* to established an encrypted
