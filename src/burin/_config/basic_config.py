@@ -16,7 +16,7 @@ from .._loggers import root
 from .._threading import _BurinLock
 
 
-def basic_config(*, datefmt=None, encoding=None, errors="backslashreplace",  # noqa: C901
+def basic_config(*, datefmt=None, encoding=None, errors="backslashreplace",  # noqa: C901,PLR0912
                  filedatefmt=None, filedelay=False, fileformat=None,
                  filelevel=None, filemode="a", filename=None, filerotate=False,
                  filerotatecount=4, filerotatesize=1048576, force=False,
