@@ -1,4 +1,4 @@
-|version-badge| |license-badge| |py-versions-badge| |action-check-badge| |coverage-badge| |docs-build-badge|
+|version-badge| |license-badge| |py-versions-badge| |github-check-badge| |coverage-badge| |docs-build-badge|
 
 .. |version-badge| image:: https://img.shields.io/pypi/v/burin?color=007EC6
     :target: https://pypi.org/project/burin/
@@ -12,7 +12,7 @@
     :target: https://pypi.org/project/burin/
     :alt: Python Versions
 
-.. |action-check-badge| image:: https://img.shields.io/github/actions/workflow/status/PeacefullyDisturbed/burin/push_check.yaml?branch=main&logo=github&label=main
+.. |github-check-badge| image:: https://img.shields.io/github/check-runs/PeacefullyDisturbed/burin/main?logo=github&label=main
     :target: https://github.com/PeacefullyDisturbed/burin/actions/workflows/push_check.yaml
     :alt: GitHub Actions Workflow Status
 
