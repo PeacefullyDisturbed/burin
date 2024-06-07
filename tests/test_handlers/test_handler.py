@@ -57,8 +57,7 @@ class TestHandler:
 
         # Change to None and check the reference is gone
         nameHandler.name = None
-        for handlerWeakRef in burin._handlers._handlers.valuerefs():
-            assert nameHandler is not handlerWeakRef()
+        assert nameHandler not in burin._handlers._handlers.valuerefs()
 
     def test_close_no_name(self, basic_handler):
         """
@@ -315,14 +314,16 @@ class TestHandler:
             waitTotal = 0
             childPid, childStatus = os.waitpid(pid, os.WNOHANG)
 
-            while childPid != 0:
+            # Coverage is ignored for these as they are to try and clean up in
+            # the case that the test failed to run properly
+            while childPid != 0: # pragma: no cover
                 if waitTotal >= maxWait:
                     break
 
                 time.sleep(waitInterval)
                 waitTotal += waitInterval
 
-            if childPid != 0:
+            if childPid != 0: # pragma: no cover
                 try:
                     os.kill(pid, signal.SIGKILL)
                     os.waitpid(pid, 0)
