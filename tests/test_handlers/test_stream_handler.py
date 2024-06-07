@@ -32,9 +32,9 @@ class TestStreamHandler:
 
         assert defaultHandler.stream is sys.stderr
 
-    def test_set_stream(self, basic_stream_handler, basic_record):
+    def test_set_stream_different(self, basic_stream_handler, basic_record):
         """
-        Tests that setting the stream works.
+        Tests that setting the stream to a different stream works.
         """
 
         logStreamA = io.StringIO()
@@ -45,17 +45,42 @@ class TestStreamHandler:
         setHandler.handle(logRecordA)
 
         logStreamA.seek(0)
-        assert logStreamA.read() == (logMessageA + "\n")
+        assert logStreamA.read() == f"{logMessageA}\n"
 
         logStreamB = io.StringIO()
         logMessageB = "Test log message: B"
         logRecordB = basic_record(msg=logMessageB)
 
-        setHandler.set_stream(logStreamB)
-        setHandler.handle(logRecordB)
+        # Ensure the handler returns the original stream
+        assert setHandler.set_stream(logStreamB) is logStreamA
 
+        setHandler.handle(logRecordB)
         logStreamB.seek(0)
-        assert logStreamB.read() == (logMessageB + "\n")
+        assert logStreamB.read() == f"{logMessageB}\n"
+
+    def test_set_stream_same(self, basic_stream_handler, basic_record):
+        """
+        Tests that setting the stream to the same stream works.
+        """
+
+        logStream = io.StringIO()
+        logMessageA = "Test log message: A"
+        logRecordA = basic_record(msg=logMessageA)
+        logMessageB = "Test log message: B"
+        logRecordB = basic_record(msg=logMessageB)
+
+        setHandler = basic_stream_handler(logStream)
+        setHandler.handle(logRecordA)
+
+        logStream.seek(0)
+        assert logStream.read() == f"{logMessageA}\n"
+
+        # None should be returned if not replacing a stream
+        assert setHandler.set_stream(logStream) is None
+
+        setHandler.handle(logRecordB)
+        logStream.seek(0)
+        assert logStream.read() == f"{logMessageA}\n{logMessageB}\n"
 
     def test_set_level_init(self, basic_stream_handler):
         """
@@ -78,7 +103,6 @@ class TestStreamHandler:
         # Check based on default level
         reprHandler = basic_stream_handler()
         streamName = str(getattr(reprHandler.stream, "name", ""))
-        if streamName:
-            streamName += " "
+        streamName += " "
 
         assert repr(reprHandler) == f"<BurinStreamHandler {streamName}(NOTSET)>"
