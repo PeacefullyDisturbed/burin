@@ -8,7 +8,7 @@ See included LICENSE file for details.
 __author__ = "William Foster"
 __license__ = "BSD-3-Clause"
 __title__ = "Burin"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 
 # Package contents
