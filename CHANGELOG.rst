@@ -1,3 +1,49 @@
+--------------------
+0.3.0 - June 8, 2024
+--------------------
+
+^^^^^^^^^^^^^^^^^^^^^^
+Features and Additions
+^^^^^^^^^^^^^^^^^^^^^^
+
+ * Added option for ``BurinSMTPHandler`` to use ``ssl.SSLContext`` for
+   *secure* parameter.
+ * Added support for ``BurinSMTPHandler`` to connect using STARTTLS if *secure*
+   is set and no credentials are.
+ * Added support for intervals to be used with
+   ``BurinTimedRotatingFileHandler`` if *when* is a weekday (*W0*-*W6*) or
+   *MIDNIGHT*.
+ * Changed ``BurinTimedRotatingFileHandler`` to treat midnight as the beginning
+   of the day if *when* is a weekday (*W0*-*W6*) or *MIDNIGHT*.
+ * Added kerword args of log record to ``BurinHandler.handle_error`` output.
+
+^^^^^^^^
+Internal
+^^^^^^^^
+
+ * Modified all handlers to no longer import from any handler in the standard
+   ``logging`` library.
+ * Changed ``_BurinDollarStyle`` to call ``_BurinPercentStyle.__init__``
+   directly instead of *super()*.
+ * Refactored several tests and added tests for ``BurinHandler`` and
+   ``BurinStreamHandler``.
+
+^^^^^^^^^^^^
+Dependencies
+^^^^^^^^^^^^
+
+ * Updated Ruff to 0.4.8
+ * Updated PyTest to 8.2.2
+ * Updated Coverage to 7.5.3
+ * Updated Sphinx to 7.3.7
+
+^^^^^^^^^^^^^^^^^^^^^
+Build and Environment
+^^^^^^^^^^^^^^^^^^^^^
+
+ * Moved local project to Hatch 1.12.0 and updated Github Action to also use
+   this version.
+
 -------------------------
 0.2.0 - February 10, 2024
 -------------------------

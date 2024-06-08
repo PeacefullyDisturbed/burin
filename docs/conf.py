@@ -37,6 +37,7 @@ extensions = [
 ]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "__pycache__"]
 highlight_language = "none"
+suppress_warnings = []
 
 # -- Options for EPUB output -------------------------------------------------
 
@@ -60,6 +61,7 @@ autoclass_content = "both"
 # -- Options for autosectionlabel --------------------------------------------
 
 autosectionlabel_prefix_document = True
+suppress_warnings.append("autosectionlabel.*")
 
 # -- Options for autosummary -------------------------------------------------
 
