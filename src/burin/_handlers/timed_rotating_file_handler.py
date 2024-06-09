@@ -69,14 +69,6 @@ class BurinTimedRotatingFileHandler(BurinBaseRotatingHandler):
         ``MIDNIGHT`` is used then the interval is how many days between
         rotation at either midnight or the specified time.
 
-        .. note::
-
-            In the standard :class:`logging.handlers.TimedRotatingFileHandler`
-            intervals are supposed to be ignored if weekdays or midnight are
-            set for *when*.  Although version 3.12.3 introduced this same
-            functionality, this is likely inadvertent as the documentation
-            still says it is ignored.
-
         When the files are rotated a time and/or date is appended to the
         filename until the *backupCount* is reached.  The :func:`time.strftime`
         format ``%Y-%m-%d_%H-%M-%S`` is used with later parts stripped off when

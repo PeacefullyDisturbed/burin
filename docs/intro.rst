@@ -32,8 +32,6 @@ standard :mod:`logging` module.
   different protocol version when creating the handler.
 * :class:`BurinTimedRotatingFileHandler` treats midnight as the start of a day
   rather than the end of a day.
-* :class:`BurinTimedRotatingFileHandler` also allows intervals to be used with
-  weekday and midnight set for *when*.
 * :class:`BurinSMTPHandler` supports :class:`ssl.SSLContext` objects for its
   *secure* parameter, and will also use *secure* to established an encrypted
   connection even if no credentials are specified.

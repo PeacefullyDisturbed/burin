@@ -103,8 +103,6 @@ standard ``logging`` module.
   different protocol version when creating the handler.
 * ``BurinTimedRotatingFileHandler`` treats midnight as the start of a day
   rather than the end of a day.
-* ``BurinTimedRotatingFileHandler`` also allows intervals to be used with
-  weekday and midnight set for *when*.
 * ``BurinSMTPHandler`` supports ``ssl.SSLContext`` objects for its
   *secure* parameter, and will also use *secure* to established an encrypted
   connection even if no credentials are specified.
