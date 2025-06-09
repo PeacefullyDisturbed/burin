@@ -63,8 +63,9 @@ class BurinFileHandler(BurinStreamHandler):
         self.mode = mode
         self.encoding = encoding
 
-        # If the file won't be in binary mode then get the proper text encoding
-        if "b" not in mode:
+        # If the file won't be in binary mode then get the proper text
+        # encoding, io.text_encoding was only added in 3.10
+        if "b" not in mode and hasattr(io, "text_encoding"):
             self.encoding = io.text_encoding(encoding)
 
         self.errors = errors
