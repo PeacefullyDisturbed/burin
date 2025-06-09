@@ -1,7 +1,7 @@
 """
 Burin Stream Handler Tests
 
-Copyright (c) 2024 William Foster with BSD 3-Clause License
+Copyright (c) 2025 William Foster with BSD 3-Clause License
 See included LICENSE file for details.
 """
 
@@ -17,10 +17,6 @@ import burin
 class TestStreamHandler:
     """
     Tests the stream handler class.
-
-    Since the BurinStreamHandler class subclasses and uses the standard library
-    :class:`logging.StreamHandler` for most of its functionality only the parts
-    of the class implemented directly in Burin are tested.
     """
 
     def test_default_stream(self, basic_stream_handler):
@@ -103,6 +99,5 @@ class TestStreamHandler:
         # Check based on default level
         reprHandler = basic_stream_handler()
         streamName = str(getattr(reprHandler.stream, "name", ""))
-        streamName += " "
 
-        assert repr(reprHandler) == f"<BurinStreamHandler {streamName}(NOTSET)>"
+        assert repr(reprHandler) == f"<BurinStreamHandler {streamName} (NOTSET)>"

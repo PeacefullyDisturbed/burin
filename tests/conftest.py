@@ -1,5 +1,8 @@
 """
 Burin PyTest Fixtures and Hooks
+
+Copyright (c) 2025 William Foster with BSD 3-Clause License
+See included LICENSE file for details.
 """
 
 # Python imports
@@ -44,6 +47,29 @@ class LineIncrementFilter(burin.BurinFilter):
 
 
 @pytest.fixture(scope="session")
+def basic_file_handler():
+    """
+    Creates a factory for a basic file handler.
+    """
+
+    handlerSig = inspect.signature(burin.BurinFileHandler)
+    handlerParams = handlerSig.parameters
+
+    def _basic_file_handler(filename, mode=handlerParams["mode"].default,
+                            encoding=handlerParams["encoding"].default,
+                            delay=handlerParams["delay"].default,
+                            errors=handlerParams["errors"].default,
+                            level=handlerParams["level"].default):
+        """
+        Factory for creating a file handler.
+        """
+
+        return burin.BurinFileHandler(filename, mode, encoding, delay, errors,
+                                      level)
+
+    return _basic_file_handler
+
+@pytest.fixture(scope="session")
 def basic_filterer():
     """
     Creates a factory for a basic filterer instance.
@@ -71,6 +97,7 @@ def basic_handler():
         """
         Factory for creating a handler.
         """
+
         return burin.BurinHandler(level)
 
     return _basic_handler
@@ -106,8 +133,9 @@ def basic_stream_handler():
     def _basic_stream_handler(stream=handlerParams["stream"].default,
                               level=handlerParams["level"].default):
         """
-        Factory for creating a handler.
+        Factory for creating a stream handler.
         """
+
         return burin.BurinStreamHandler(stream, level)
 
     return _basic_stream_handler
